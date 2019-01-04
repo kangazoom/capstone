@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from input_lines.views import fetch_input_lines
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('fetch_input_lines/', fetch_input_lines)
 ]
