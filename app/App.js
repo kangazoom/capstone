@@ -9,6 +9,9 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 
+import InputTextAPIRequests from './components/InputTextAPIRequests';
+import FireBaseService from './components/Network/FireBaseService';
+
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
   android:
@@ -17,13 +20,38 @@ const instructions = Platform.select({
 });
 
 type Props = {};
-export default class App extends Component<Props> {
+class App extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      scripts: []
+    }
+  }
+
+  componentDidMount() {
+    const me = this;
+    FireBaseService.initializeService()
+    FireBaseService.getScripts()
+    .then((scriptsArray) => {
+      me.setState({
+        scripts: scriptsArray
+      });
+    })
+    .catch((error) => {
+      // todo: error handling
+    })
+  }
+
   render() {
+
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
         <Text style={styles.instructions}>To get started, edit App.js</Text>
         <Text style={styles.instructions}>{instructions}</Text>
+        <InputTextAPIRequests URL='localhost:8000/api/inputlines/'/>
+        <Text>{this.state.scripts.length}</Text>
       </View>
     );
   }
@@ -47,3 +75,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+
+export default App;
