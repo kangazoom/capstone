@@ -7,17 +7,12 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, FlatList} from 'react-native';
+import { List, ListItem } from "react-native-elements";
 
 import InputTextAPIRequests from './components/InputTextAPIRequests';
 import FireBaseService from './components/Network/FireBaseService';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
 
 type Props = {};
 class App extends Component {
@@ -43,15 +38,30 @@ class App extends Component {
     })
   }
 
+
   render() {
+    // QUESTION: WHY DOES THE CODE STOP WORKING IF I REMOVE THIS?
+    // HOW DOES IT ENSURE THE COMPONENT LOADS FIRST???
+    if (this.state.scripts.length === 0) {
+      console.log('DID NOT LOAD')
+      return null;
+    }
+    // NOTE: working with lines first
+    console.log(JSON.stringify(this.state.scripts[1].title))
 
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
         <InputTextAPIRequests URL='localhost:8000/api/inputlines/'/>
-        <Text>{this.state.scripts.length}</Text>
+        <Text>{this.state.scripts[1].title} by {this.state.scripts[1].author}</Text>
+        <FlatList
+          style={styles.scriptText}
+          data={this.state.scripts[1].script_data}
+          renderItem={({ item }) => 
+          <Text style={styles.eachLine}>{`${item.speaking_character}: ${item.line}`}</Text>}
+          keyExtractor={item => JSON.stringify(item.index)}
+          />
+          <Text>HI WHAT</Text>
       </View>
     );
   }
@@ -69,9 +79,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 10,
   },
-  instructions: {
-    textAlign: 'center',
+
+  scriptText: {
+    textAlign: 'left',
     color: '#333333',
+    marginLeft: 5,
+    marginRight: 5,
+  },
+
+  eachLine: {
+    textAlign: 'left',
+    color: '#333333',
+    marginTop: 5,
     marginBottom: 5,
   },
 });
