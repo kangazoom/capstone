@@ -130,8 +130,7 @@ import React, {Component} from 'react';
 import {StyleSheet, Text, View, FlatList} from 'react-native';
 import { List, ListItem } from "react-native-elements";
 
-import InputTextAPIRequests from './components/InputTextAPIRequests';
-import FireBaseService from './components/Network/FireBaseService';
+// import FireBaseService from './components/Network/FireBaseService';
 
 import Header from './src/components/Header';
 import ScriptContainer from './src/components/ScriptContainer';
@@ -151,35 +150,35 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
-    const me = this;
-    FireBaseService.initializeService()
-    FireBaseService.getScripts()
-    .then((scriptsArray) => {
-      me.setState({
-        scripts: scriptsArray
-      });
-      Actions.header();
-    })
-    .catch((error) => {
-      // todo: error handling
-    })
-  }
+  // componentDidMount() {
+  //   const me = this;
+  //   FireBaseService.initializeService()
+  //   FireBaseService.getScripts()
+  //   .then((scriptsArray) => {
+  //     me.setState({
+  //       scripts: scriptsArray
+  //     });
+  //     // Actions.header();
+  //   })
+  //   .catch((error) => {
+  //     // todo: error handling
+  //   })
+  // }
 
-  renderLines() {
-    return this.state.scripts.map(script => <ScriptLineDetail key={script.title} text={script} />)
-  }
+  // renderLines() {
+  //   return this.state.scripts.map(script => <ScriptLineDetail key={script.title} text={script} />)
+  // }
 
 
   render() {
     // QUESTION: WHY DOES THE CODE STOP WORKING IF I REMOVE THIS?
     // HOW DOES IT ENSURE THE COMPONENT LOADS FIRST???
-    if (this.state.scripts.length === 0) {
-      console.log('DID NOT LOAD')
-      return null;
-    }
+    // if (this.state.scripts.length === 0) {
+    //   console.log('DID NOT LOAD')
+    //   return null;
+    // }
     // NOTE: working with lines first
-    console.log(JSON.stringify(this.state.scripts[1].title))
+    // console.log(JSON.stringify(this.state.scripts[1].title))
     
 
     return (
