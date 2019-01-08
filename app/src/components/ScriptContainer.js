@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, FlatList, View, Text } from 'react-native';
 
 class ScriptContainer extends Component {
     render() {
         return (
             <View>
-                <Text>hihihihihihi script container hihihihi</Text>
+             <FlatList
+          data={this.props.scriptLines.script_data}
+          renderItem={({ item }) => 
+          <Text>{`${item.speaking_character}: ${item.line}`}</Text>}
+          keyExtractor={item => JSON.stringify(item.index)}
+          />
             </View>
         );
     }

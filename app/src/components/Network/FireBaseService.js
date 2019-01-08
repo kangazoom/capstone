@@ -24,7 +24,9 @@ export default class FireBaseService {
         return scriptsReference.get().then((querySnapshot) => {
             console.log('we made it!')
             let scripts = querySnapshot.docs.map((documentSnapshot) => {
-                return documentSnapshot.data()
+                documentAsData = documentSnapshot.data()
+                documentAsData['id'] = documentSnapshot.id
+                return documentAsData
             });
             console.log('yay')
             return Promise.resolve(scripts)
