@@ -15,49 +15,73 @@ class RouterComponent extends Component {
     constructor() {
         super()
         this.state = {
-            scripts: []
+            scripts: [],
+            selectedScript: null,
+            selectedCharacter: null,
+            selectedLine: null,
         }
     }
 
-      componentDidMount() {
-    const me = this;
-    FireBaseService.initializeService()
-    FireBaseService.getScripts()
-    .then((scriptsArray) => {
-      me.setState({
-        scripts: scriptsArray
-      });
-      // Actions.header();
-    })
-    .catch((error) => {
-      // todo: error handling
-    })
-  }
+    componentDidMount() {
+        const me = this;
+        FireBaseService.initializeService()
+        FireBaseService.getScripts()
+            .then((scriptsArray) => {
+                me.setState({
+                    scripts: scriptsArray
+                });
+                // Actions.header();
+            })
+            .catch((error) => {
+                // todo: error handling
+            })
+    }
 
-//   renderLines() {
-//     return this.state.scripts.map(script => <ScriptLineDetail key={script.title} text={script} />)
-//   }
+    findScript = (scriptID) => {
+        return this.state.scripts.find(script => script.id === scriptID)
+        // this.props.selectedCustomerCB(clickedCustomer)
+    }
+
+    setSelectedScript = (ScriptID) => {
+        let clickedScript = this.findScript(ScriptID)
+        this.setState({
+            selectedScript: clickedScript
+        })
+    }
+
+
+    //   renderLines() {
+    //     return this.state.scripts.map(script => <ScriptLineDetail key={script.title} text={script} />)
+    //   }
     render() {
 
-    // QUESTION: WHY DOES THE CODE STOP WORKING IF I REMOVE THIS?
-    // HOW DOES IT ENSURE THE COMPONENT LOADS FIRST???
-    if (this.state.scripts.length === 0) {
-      console.log('DID NOT LOAD')
-      return null;
-    }
-    // NOTE: working with lines first
-    // console.log(JSON.stringify(this.state.scripts[1].title))
-    
-    // console.log(this.state.scripts[0].title)
+        // QUESTION: WHY DOES THE CODE STOP WORKING IF I REMOVE THIS?
+        // HOW DOES IT ENSURE THE COMPONENT LOADS FIRST???
+        if (this.state.scripts.length === 0) {
+            return null;
+        }
+        // NOTE: working with lines first
+        // console.log(JSON.stringify(this.state.scripts[1].title))
+
+        // console.log(this.state.scripts[0].title)
+
+        //   console.log(this.state.selectedScript)
+
         return (
             <Router>
                 <Scene key="root">
-                    <Scene key="welcome" 
-                    component={Welcome} title="Welcome!" 
-                    scriptCollection = {this.state.scripts}
-                    initial />
+                    <Scene key="welcome"
+                        component={Welcome} title="Welcome!"
+                        scriptCollection={this.state.scripts}
+                        selectedScript={this.state.selectedScript}
+                        selectScriptCB={this.setSelectedScript}
+                        initial />
                     <Scene key="chooseCharacter" component={ChooseCharacter} title="Choose a Character:" />
-                    <Scene key="scriptContainer" component={ScriptContainer} title="Select A Line to Study:" />
+                    <Scene
+                        key="scriptContainer"
+                        component={ScriptContainer}
+                        title="Select A Line to Study:"
+                        scriptLines={this.state.scripts[1]} />
                     <Scene key="TestMemoryContainer" component={TestMemoryContainer} title="Test Your Memory" />
                     <Scene key="ResultsContainer" component={ResultsContainer} title="Results: XX% Accurate" />
                 </Scene>
