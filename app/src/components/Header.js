@@ -1,24 +1,33 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, FlatList, Button } from 'react-native';
+
+import ScriptLineDetail from './ScriptLineDetail'
+
+import * as actions from '../Actions';
+import { connect } from 'react-redux';
 
 class Header extends Component {
-    constructor(props) {
-        super(props)
+    renderItem(script) {
+        return <ScriptLineDetail script={script} />;
     }
 
     render() {
-        headerText = this.props.headerText;
-
+        console.log(this.props)
+        data = this.props.scripts;
         return (
-            <Text style={styles.headerStyle}> {headerText} </Text>
+            <FlatList
+                data={data}
+                renderItem={this.renderItem}
+                keyExtractor={item => item.title}
+            />
         );
     }
 }
 
-const styles = StyleSheet.create({
-    headerStyle: {
-        fontSize: 50,
-    }
-});
+const mapStateToProps = (state, ownProps) => {
+    console.log(ownProps)
+    return { scripts: state.scripts }
 
-export default Header;
+};
+
+export default connect(mapStateToProps, actions)(Header);
