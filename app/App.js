@@ -1,189 +1,139 @@
-// /**
-//  * Sample React Native App
-//  * https://github.com/facebook/react-native
-//  *
-//  * @format
-//  * @flow
-//  */
-
-// import React, {Component} from 'react';
-// import {StyleSheet, Text, View, FlatList} from 'react-native';
-// import { List, ListItem } from "react-native-elements";
-
-// import InputTextAPIRequests from './components/InputTextAPIRequests';
-// import FireBaseService from './components/Network/FireBaseService';
-
-// import Header from './src/components/Header';
-// import ScriptContainer from './src/components/ScriptContainer';
-// import ScriptLineDetail from './src/components/ScriptLineDetail';
-
-// import Router from './src/Router';
-
-
-// type Props = {};
-// class App extends Component {
-//   constructor(props) {
-//     super(props)
-
-//     this.state = {
-//       scripts: [],
-//     }
-//   }
-
-//   componentDidMount() {
-//     const me = this;
-//     FireBaseService.initializeService()
-//     FireBaseService.getScripts()
-//     .then((scriptsArray) => {
-//       me.setState({
-//         scripts: scriptsArray
-//       });
-//       Header();
-//     })
-//     .catch((error) => {
-//       // todo: error handling
-//     })
-//   }
-
-//   renderLines() {
-//     return this.state.scripts.map(script => <ScriptLineDetail key={script.title} text={script} />)
-//   }
-
-
-//   render() {
-//     // QUESTION: WHY DOES THE CODE STOP WORKING IF I REMOVE THIS?
-//     // HOW DOES IT ENSURE THE COMPONENT LOADS FIRST???
-//     if (this.state.scripts.length === 0) {
-//       console.log('DID NOT LOAD')
-//       return null;
-//     }
-//     // NOTE: working with lines first
-//     console.log(JSON.stringify(this.state.scripts[1].title))
-    
-
-//     return (
-//       <View style={styles.container}>
-//         <Header headerText={"i am changing header props"}/>
-//         <Router />
-//         <Text style={styles.welcome}>Welcome to React Native!</Text>
-//         <InputTextAPIRequests URL='localhost:8000/api/inputlines/'/>
-//         <Text>{this.state.scripts[1].title} by {this.state.scripts[1].author}</Text>
-//         {this.renderLines()}
-//         <FlatList
-//           style={styles.scriptText}
-//           data={this.state.scripts[1].script_data}
-//           renderItem={({ item }) => 
-//           <Text style={styles.eachLine}>{`${item.speaking_character}: ${item.line}`}</Text>}
-//           keyExtractor={item => JSON.stringify(item.index)}
-//           />
-//           <Text>HI WHAT</Text>
-//       </View>
-//     );
-//   }
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#F5FCFF',
-//   },
-//   welcome: {
-//     fontSize: 20,
-//     textAlign: 'center',
-//     margin: 10,
-//   },
-
-//   scriptText: {
-//     textAlign: 'left',
-//     color: '#333333',
-//     marginLeft: 5,
-//     marginRight: 5,
-//   },
-
-//   eachLine: {
-//     textAlign: 'left',
-//     color: '#333333',
-//     marginTop: 5,
-//     marginBottom: 5,
-//   },
-// });
-
-
-// export default App;
-
-// -------------------------------------
-// routing ideas
-// --------------------------------------
-
-
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
 
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, FlatList} from 'react-native';
 import { List, ListItem } from "react-native-elements";
 
-// import FireBaseService from './components/Network/FireBaseService';
+import { Stack, Scene, Router, Actions } from 'react-native-router-flux';
+import FireBaseService from './src/components/Network/FireBaseService';
 
-import Header from './src/components/Header';
+// import Header from './src/components/Welcome';
+import Welcome from './src/components/Welcome';
+import ChooseCharacter from './src/components/ChooseCharacter';
 import ScriptContainer from './src/components/ScriptContainer';
-import ScriptLineDetail from './src/components/ScriptLineDetail';
+import TestMemoryContainer from './src/components/TestMemoryContainer';
+import ResultsContainer from './src/components/TestMemoryContainer';
 
-import Router from './src/Router';
-import {Actions} from 'react-native-router-flux';
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+import reducers from './src/Reducers';
+// import {Actions} from 'react-native-router-flux';
 
-
-type Props = {};
-class App extends Component {
-  constructor(props) {
-    super(props)
-
+class App extends Component {  
+  constructor() {
+    super()
     this.state = {
-      scripts: [],
+        scripts: [],
+        selectedScript: null,
+        selectedCharacter: null,
+        selectedLine: null,
     }
+}
+
+
+// GRAB SCRIPTS
+
+componentDidMount() {
+  const me = this;
+  FireBaseService.initializeService()
+  FireBaseService.getScripts()
+      .then((scriptsArray) => {
+          me.setState({
+              scripts: scriptsArray
+          });
+          // Actions.header();
+      })
+      .catch((error) => {
+          // todo: error handling
+      })
+}
+
+// ----- SCRIPT SELECTION ----- //
+
+findScript = (scriptID) => {
+  return this.state.scripts.find(script => script.id === scriptID)
+}
+
+setSelectedScript = (ScriptID) => {
+  let clickedScript = this.findScript(ScriptID)
+  // console.log(clickedScript)
+  this.setState({
+      selectedScript: clickedScript
+  })
+}
+
+
+// ----- CHARACTER SELECTION ----- //
+
+// findCharacter = (scriptID) => {
+//     return this.state.scripts.find(script => script.id === scriptID)
+//     // this.props.selectedCustomerCB(clickedCustomer)
+// }
+
+setSelectedCharacter = (characterName) => {
+    console.log(characterName)
+
+  this.setState({
+      selectedCharacter: characterName
+  });
+}
+
+
+
+render() {
+
+console.log('From App.js: this.state.selectedScript.title')
+{this.state.selectedScript !== null ? console.log(this.state.selectedScript.title) : null}
+console.log('From App.js: this.state.selectedCharacter')
+console.log(this.state.selectedCharacter)
+
+// I think I need this so that stuff doesn't render before the scripts do
+  if (this.state.scripts.length === 0) {
+      return null;
   }
 
-  // componentDidMount() {
-  //   const me = this;
-  //   FireBaseService.initializeService()
-  //   FireBaseService.getScripts()
-  //   .then((scriptsArray) => {
-  //     me.setState({
-  //       scripts: scriptsArray
-  //     });
-  //     // Actions.header();
-  //   })
-  //   .catch((error) => {
-  //     // todo: error handling
-  //   })
-  // }
-
-  // renderLines() {
-  //   return this.state.scripts.map(script => <ScriptLineDetail key={script.title} text={script} />)
-  // }
-
-
-  render() {
-    // QUESTION: WHY DOES THE CODE STOP WORKING IF I REMOVE THIS?
-    // HOW DOES IT ENSURE THE COMPONENT LOADS FIRST???
-    // if (this.state.scripts.length === 0) {
-    //   console.log('DID NOT LOAD')
-    //   return null;
-    // }
-    // NOTE: working with lines first
-    // console.log(JSON.stringify(this.state.scripts[1].title))
-    
-
     return (
+// originally, i had these props lined up with the scenes,
+// but i don't think it matters
 
-        <Router />
+      <Router
+      // text='hi'
+      scriptCollection={this.state.scripts}
+      selectedScript={this.state.selectedScript}
+      selectedCharacter={this.state.selectedCharacter}
+      getNewer = {() => this.state}
+      selectScriptCB={this.setSelectedScript}
+      selectCharacterCB={this.setSelectedCharacter}
+      // {...this.state}
+      >
+      <Scene key="root">
+          <Scene key="welcome"
+              title="Welcome!"
+              // onExit={() => Actions.refresh(this.state)}
+              component={Welcome}
+              // scriptCollection={this.state.scripts}
+              // selectedScript={this.state.selectedScript}
+              // selectedCharacter={this.state.selectedCharacter}
+              // selectScriptCB={this.setSelectedScript}
+              initial={true}/>
+          <Scene key="chooseCharacter"
+              title="Choose a Character:"
+              // onEnter={() => Actions.refresh(this.state)}
+              component={ChooseCharacter}
+              // selectedScript={this.state.selectedScript}
+              // selectedCharacter={this.state.selectedCharacter}
+              // selectCharacterCB={this.setSelectedCharacter}
+              // getNewer = {() => this.state}
+              />
+          <Scene
+              key="scriptContainer"
+              title="Select A Line to Study:"
+              // onEnter={() => Actions.refresh(this.state)}
+              component={ScriptContainer}
+              scriptLines={this.state.scripts[1]}/>
+          <Scene key="TestMemoryContainer" component={TestMemoryContainer} title="Test Your Memory" />
+          <Scene key="ResultsContainer" component={ResultsContainer} title="Results: XX% Accurate" />
+      </Scene>
+  </Router>
  
     );
   }
