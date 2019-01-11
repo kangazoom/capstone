@@ -3,25 +3,30 @@ import { StyleSheet, FlatList, View, Text } from 'react-native';
 
 class ScriptContainer extends Component {
     constructor(props) {
-        super(props)
-        this.updatedProps = props.getNewer()
-    }
-    render() {
-        let {
-            selectedScript,
-            selectedCharacter,
-            // refresh
-        } = this.updatedProps;
+        super(props);
+        this.state = { selectedCharacter : props.selectedCharacter }
 
-        console.log(this.updatedProps)
+        this.renderCell = this.renderCell.bind(this);
+    }
+
+    renderCell(cellData) {
+        const selectedCharacter = this.state.selectedCharacter;
+        const textColor = (cellData.item.speaking_character === selectedCharacter) ? 'red' : 'black';
+        return (
+            <View style={{ borderColor:'black', borderWidth: 2 }}>
+                <Text style={{ color: textColor }}>{`${cellData.item.speaking_character}: ${cellData.item.line}`}</Text>
+            </View>
+        );
+    }
+
+    render() {
         return (
             <View>
-             <FlatList
-          data={this.props.scriptLines.script_data}
-          renderItem={({ item }) => 
-          <Text>{`${item.speaking_character}: ${item.line}`}</Text>}
-          keyExtractor={item => JSON.stringify(item.index)}
-          />
+                <FlatList
+                    data={this.props.selectedScript.script_data}
+                    renderItem={this.renderCell}
+                    keyExtractor={item => JSON.stringify(item.index)}
+                />
             </View>
         );
     }
