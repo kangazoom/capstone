@@ -8,6 +8,10 @@ target 'app' do
   # Pods for app
 pod 'Firebase/Core'
 pod 'Firebase/Firestore'
+pod 'React', :path => '../node_modules/react-native'
+pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
 
+
+  pod 'RNAudio', :path => '../node_modules/react-native-audio'
 
 end
