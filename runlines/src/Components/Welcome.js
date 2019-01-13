@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, FlatList, Button } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
-// import RecorderComponent from './RecorderComponent';
+import RecorderContainer from './RecorderContainer';
 
 import UploadFile from './UploadFile';
 import GoogleSpeechService from '../Network/GoogleSpeechService';
@@ -43,6 +43,7 @@ class Welcome extends Component {
                     title='test me!'
                     onPress={() => GoogleSpeechService.discover()}
                 />
+                <RecorderContainer />
 
 </View>
 
