@@ -2,20 +2,24 @@
 platform :ios, '9.0'
 
 
-
 target 'runlines' do
   pod 'Firebase/Core'	
   pod 'Firebase/Firestore'	
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  # use_frameworks!
+  pod 'React', :path => '../node_modules/react-native'
+# , :subspecs => [
+#     'Core',
+#     'CxxBridge', # Include this for RN >= 0.47
+#     'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
+#     'RCTText',
+#     'RCTNetwork',
+#     'RCTWebSocket', # Needed for debugging
+#     'RCTAnimation', # Needed for FlatList and animations running on native UI thread
+#     # Add any other subspecs you want to use in your project
+#   ]
 
-  # Pods for runlines
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
 
-  # target 'runlines-tvOSTests' do
-  #   inherit! :search_paths
-  #   # Pods for testing
-  # end
-
+  pod 'react-native-fetch-blob', :path => '../node_modules/react-native-fetch-blob'
 
   # target 'runlinesTests' do
   #   inherit! :search_paths
@@ -36,3 +40,11 @@ target 'runlines' do
   # end
 
 end
+
+#    post_install do |installer_representation|
+#      installer_representation.pods_project.targets.each do |target|
+#          if target.name == "React"
+#              target.remove_from_project
+#          end
+#      end
+#  end

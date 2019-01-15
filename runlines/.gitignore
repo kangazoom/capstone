@@ -54,3 +54,7 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
+
+
+*.env
+GOOGLE_APPLICATION_CREDENTIALS.env

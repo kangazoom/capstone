@@ -96,6 +96,7 @@ console.log(this.state.selectedCharacter)
       scriptCollection={this.state.scripts}
       selectedScript={this.state.selectedScript}
       selectedCharacter={this.state.selectedCharacter}
+      selectedLine={this.state.selectedLine}
       getNewer = {() => this.state}
       selectScriptCB={this.setSelectedScript}
       selectCharacterCB={this.setSelectedCharacter}
@@ -126,8 +127,8 @@ console.log(this.state.selectedCharacter)
               // onEnter={() => Actions.refresh(this.state)}
               component={ScriptContainer}
               scriptLines={this.state.scripts[1]}/>
-          <Scene key="TestMemoryContainer" component={TestMemoryContainer} title="Test Your Memory" />
-          <Scene key="ResultsContainer" component={ResultsContainer} title="Results: XX% Accurate" />
+          <Scene key="testMemoryContainer" component={TestMemoryContainer} title="Test Your Memory" />
+          <Scene key="resultsContainer" component={ResultsContainer} title="Results: XX% Accurate" />
       </Scene>
   </Router>
  
