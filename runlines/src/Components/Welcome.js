@@ -3,9 +3,11 @@ import { StyleSheet, View, Text, FlatList, Button } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
 import RecorderContainer from './RecorderContainer';
+import GoogleSpeechService from '../Network/GoogleSpeechService'
+import FireBaseService from '../Network/FireBaseService';
+
 
 import UploadFile from './UploadFile';
-import GoogleSpeechService from '../Network/GoogleSpeechService';
 
 class Welcome extends Component {
 

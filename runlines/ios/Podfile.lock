@@ -91,10 +91,20 @@ PODS:
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
   - Protobuf (3.6.1)
+  - React (0.57.8):
+    - React/Core (= 0.57.8)
+  - react-native-fetch-blob (0.10.6):
+    - React/Core
+  - React/Core (0.57.8):
+    - yoga (= 0.57.8.React)
+  - yoga (0.57.8.React)
 
 DEPENDENCIES:
   - Firebase/Core
   - Firebase/Firestore
+  - React (from `../node_modules/react-native`)
+  - react-native-fetch-blob (from `../node_modules/react-native-fetch-blob`)
+  - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -113,6 +123,14 @@ SPEC REPOS:
     - nanopb
     - Protobuf
 
+EXTERNAL SOURCES:
+  React:
+    :path: "../node_modules/react-native"
+  react-native-fetch-blob:
+    :path: "../node_modules/react-native-fetch-blob"
+  yoga:
+    :path: "../node_modules/react-native/ReactCommon/yoga"
+
 SPEC CHECKSUMS:
   BoringSSL: e10f92a27043805c01071fe815a5cd98ae8212e7
   Firebase: 8bb9268bff82374f2cbaaabb143e725743c316ae
@@ -128,7 +146,10 @@ SPEC CHECKSUMS:
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
+  React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
+  react-native-fetch-blob: 63394b1d7b0781547b3e4463b3195790177b1222
+  yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: e050d8e547b59499250900390b7582170a8a10a1
+PODFILE CHECKSUM: 3eb06731054452261239e7d3870eed25a80dc524
 
 COCOAPODS: 1.5.3

@@ -13,10 +13,10 @@ class ResultsContainer extends Component {
                 <Button
                     title='Your Previous Line' />
                 <Button
-                    onPress={Actions.testMemoryContainer}
+                    // onPress={Actions.testMemoryContainer}
                     title='Try Again' />
                 <Button
-                    onPress={Actions.scriptContainer}
+                    // onPress={Actions.scriptContainer}
                     title='View Script' />
                 <Button
                     title='Your Next Line' />
