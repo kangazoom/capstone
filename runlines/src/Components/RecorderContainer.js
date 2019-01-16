@@ -13,6 +13,7 @@ import {
 import { Actions } from 'react-native-router-flux'
 
 import FireBaseService from '../Network/FireBaseService';
+import GoogleSpeechService from '../Network/GoogleSpeechService';
 
 // import RNFS from 'react-native-fs';
 // const RNFS = require('react-native-fs');
@@ -39,6 +40,10 @@ class RecorderContainer extends Component {
     this.timer = null
   }
 
+  componentDidMount() {
+    this.prepareRecordingPath()
+  }
+
   prepareRecordingPath() {
     console.log(Constants.AUDIO_PATH)
     AudioRecorder.prepareRecordingAtPath(Constants.AUDIO_PATH, {
@@ -52,9 +57,6 @@ class RecorderContainer extends Component {
   }
 
   record = () => {
-
-    this.prepareRecordingPath()
-    AudioRecorder.startRecording()
     console.log('recording')
     this.setState({
       isPlaying: false,
@@ -62,26 +64,43 @@ class RecorderContainer extends Component {
       isFinishRecorded: false,
       audioLength: 0,
       currentTime: 0
+    }, () => {
+      AudioRecorder.startRecording()
+      this.timer = setInterval(() => {
+        const time = this.state.currentTime + 1
+        this.setState({ currentTime: time })
+        if (time === Constants.MAX_AUDIO_LENGTH) {
+          this.stopRecording()
+        }
+      }, 1000)
     })
-
-    this.timer = setInterval(() => {
-      const time = this.state.currentTime + 1
-      this.setState({ currentTime: time })
-      if (time === Constants.MAX_AUDIO_LENGTH) {
-        this.stopRecording()
-      }
-    }, 1000)
   }
 
   stopRecording = () => {
     const { isRecording } = this.state
     if (!isRecording) return
-
+    const me = this;
     AudioRecorder.stopRecording()
     console.log('stopped')
-    this.setState({ audioLength: this.state.currentTime + 1 })
-    clearInterval(this.timer)
-    this.setState({ isRecording: false, isFinishRecorded: true, currentTime: 0 })
+    this.setState({ audioLength: this.state.currentTime + 1, isRecording: false, }, () => {
+      if (me.state.audioLength > 0) {
+        console.log('we are in the encoding audio if/else')
+        clearInterval(this.timer);
+        me.encodeAudio()
+        .then((response) => {
+          // me.clearInterval(me.timer)
+          me.setState({ isFinishRecorded: true, currentTime: 0 }, ()  => {
+            console.log(`TEARS OF JOY q_q`)
+            Promise.resolve(response)
+          }) 
+        })
+      .catch((error) => {
+        console.log(`Inside the stopRecording Function: ${error}`)
+        Promise.reject(error)
+      })
+      }
+    })
+
   }
 
   encodeAudio = () => {
@@ -94,25 +113,31 @@ class RecorderContainer extends Component {
     //     const Buffer = require("buffer").Buffer;
     // let encodedAuth = new Buffer("your text").toString("base64");
     // console.log(Buffer)
+
     console.log('k in encoding land')
     const filepath = Constants.AUDIO_PATH;
     const encoding = 'base64'
-    RNFetchBlob.fs.readFile(filepath, encoding)
+    console.log(filepath)
+    console.log(encoding)
+    return RNFetchBlob.fs.readFile(filepath, encoding)
       .then((data) => {
+        console.log(typeof data)
+        if(!data) { return Promise.reject('We got not data from readFile') }
         console.log('encoding successful')
-        // console.log(data)
 
-        if (data) {
-        FireBaseService.initializeService()
-        FireBaseService.addEncodedAudio(data)
-        
-        return 'yay encoded data'
-        }
 
-      })
+        // FireBaseService.initializeService()
+        // FireBaseService.addEncodedAudio(data)
+
+        return GoogleSpeechService.discover(data);
+    }).then((transcript) => {
+      console.log(JSON.stringify(transcript));
+      return Promise.resolve('yay encoded data')
+
+    })
       .catch((err) => {
-        console.log('no encoding')
-        return 'error'
+        console.log(`no encoding ${err}`)
+        return Promise.reject('error')
       })
 
     // add the encoded data into firestore
@@ -154,42 +179,26 @@ class RecorderContainer extends Component {
 
   }
 
-
-
   render() {
     const {
       isRecording,
-      isFinishRecorded,
     } = this.state
-
-    if (this.state.audioLength > 0 && this.state.isFinishRecorded === true) {
-      console.log('we are in the encoding audio if/else')
-      this.encodeAudio()
-    }
-
-  
-    console.log(this.state.audioLength)
-    console.log(this.state.isFinishRecorded)
-
-
-  console.log(AudioRecorder)
-
+    console.log('render called, is recording is ' + isRecording);
   return(
       <View>
-  <Button
-    title='rec'
-    isRecording={isRecording}
-    isFinishRecorded={isFinishRecorded}
-    onPress={this.record} />
+        <Button
+          title='RECORD'
+          disabled={isRecording}
+          onPress={this.record}
+        />
 {/* <RecordButton></RecordButton> */ }
+        <Text>{this.state.currentTime}</Text>
 
-
-<Button
-  title="stop rec"
-  isFinishRecorded={isFinishRecorded}
-  isRecording={isRecording}
-  // playPauseHandler={playPauseHandler}
-  onPress={this.stopRecording} />
+        <Button
+          title="STOP"
+          disabled={!isRecording}
+          onPress={this.stopRecording}
+        />
 
   {/* <Text>{JSON.stringify(this.tryFunctions())}</Text> */}
 
