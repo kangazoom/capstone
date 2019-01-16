@@ -81,7 +81,7 @@ exports.googleSpeechRequest = functions.https.onRequest((request, response) => {
 ///////////////////////////////
       
 // Declare the API clients as global variables to allow them to initiaze at cold start.
-const speechToTextClient = getSpeechToTextClient();
+const speechToTextClient = require('@google-cloud/speech')
 
 // exports.speechTranslate = (request, response) => {
   let responseBody = {};
