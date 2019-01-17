@@ -1,6 +1,5 @@
 import axios from 'axios';
-// import {KEY} from './k';
-
+import keys from '../../keys.json'
 export default class GoogleSpeechService {
     constructor() {
 
@@ -35,7 +34,7 @@ export default class GoogleSpeechService {
 
     static discover(encodedAudio) {
         let axios = this.instance;
-        return axios.post(`/v1/speech:recognize/?key=KEY`, {
+        return axios.post(`/v1/speech:recognize/?key=${keys.GCS_API_KEY}`, {
             "audio": {
                 "content": encodedAudio,
             },
