@@ -9,9 +9,16 @@ class TestMemoryContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedLine: props.selectedLine
+            selectedLine: props.selectedLine,
+            transcription: null
         }
     }
+    
+        transcriptionResponse = (data) => {
+            this.setState({
+              transcription: data
+            })
+          }
     
     render() {
         return (
@@ -19,13 +26,8 @@ class TestMemoryContainer extends Component {
                 <Text>Cue Line: [FIX ME]</Text>
                 <Text>{this.state.selectedLine.item.line}</Text>
                 <Text>Record</Text>
-                <RecorderContainer />
-                <Button
-                    // onPress={Actions.resultsContainer}
-                    title="Start Over" />
-                <Button
-                    // onPress={Actions.resultsContainer}
-                    title='View Results' />
+                <RecorderContainer returnedTranscriptionResponseCB={this.transcriptionResponse} />
+                <Text>{JSON.stringify(this.state.transcription)}</Text>
 
             </View>
         );

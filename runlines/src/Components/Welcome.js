@@ -10,6 +10,16 @@ import FireBaseService from '../Network/FireBaseService';
 import UploadFile from './UploadFile';
 
 class Welcome extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { transcription : null }
+    }
+
+    transcriptionResponse = (data) => {
+        this.setState({
+          transcription: data
+        })
+      }
 
     onScriptPress = (item) => {
         Actions.chooseCharacter({selectedScript: item});
@@ -41,11 +51,6 @@ class Welcome extends Component {
                 />
                 
                 <UploadFile />
-                <Button
-                    title='test me!'
-                    onPress={() => GoogleSpeechService.discover()}
-                />
-                <RecorderContainer />
 
 </View>
 

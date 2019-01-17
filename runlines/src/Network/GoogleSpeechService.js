@@ -1,8 +1,8 @@
 import axios from 'axios';
+// import {KEY} from './k';
 
 export default class GoogleSpeechService {
     constructor() {
-
 
     }
 
@@ -33,19 +33,16 @@ export default class GoogleSpeechService {
     //   }
     //       }
 
-    static discover() {
-
-        const aud = ""
+    static discover(encodedAudio) {
         let axios = this.instance;
-        return axios.post('v1/speech:recognize/?key=ENTERKEY', 
-        {
+        return axios.post(`/v1/speech:recognize/?key=KEY`, {
             "audio": {
-                "content": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                "content": encodedAudio,
             },
             "config": {
-                "encoding": "FLAC",
+                "encoding": "MULAW",
                 "languageCode": "en-US",
-                "sampleRateHertz": 22050
+                "sampleRateHertz": 16000
             },
         }
         ).then((response) => {
