@@ -33,6 +33,8 @@ class Welcome extends Component {
             scriptCollection,
         } = this.props;
 
+        console.log(process.env.REACT_APP_API_KEY)
+
         return (
             <View>
                 <Text style={styles.headerStyle}>You'll learn your lines in no time!</Text>
@@ -51,7 +53,6 @@ class Welcome extends Component {
                 />
                 
                 <UploadFile />
-
 </View>
 
         );
