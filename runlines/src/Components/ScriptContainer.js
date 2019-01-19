@@ -27,7 +27,7 @@ class ScriptContainer extends Component {
 
     onLinePress = (pressedLine) => {
         console.log(pressedLine)
-        Actions.testMemoryContainer({ selectedCharacter: this.props.characterName, selectedScript: this.props.selectedScript, selectedLine: pressedLine })
+        Actions.testMemoryContainer({ selectedCharacter: this.props.characterName, selectedScript: this.props.selectedScript, selectedLine: pressedLine.item.line })
     }
 
 

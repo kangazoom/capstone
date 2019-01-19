@@ -10,7 +10,7 @@ import Welcome from './Components/Welcome';
 import ChooseCharacter from './Components/ChooseCharacter';
 import ScriptContainer from './Components/ScriptContainer';
 import TestMemoryContainer from './Components/TestMemoryContainer';
-import ResultsContainer from './Components/TestMemoryContainer';
+import ResultsContainer from './Components/ResultsContainer';
 
 // import {Actions} from 'react-native-router-flux';
 
