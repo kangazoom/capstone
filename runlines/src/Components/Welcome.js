@@ -26,6 +26,7 @@ class Welcome extends Component {
     }
 
     render() {
+
         // ATTEMPT TO UPDATE PROPS:
         // this.onLoad()
 
@@ -33,7 +34,6 @@ class Welcome extends Component {
             scriptCollection,
         } = this.props;
 
-        console.log(process.env.REACT_APP_API_KEY)
 
         return (
             <View>

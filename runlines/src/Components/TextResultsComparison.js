@@ -6,18 +6,29 @@ import { Actions } from 'react-native-router-flux';
 class TextResultsComparison extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            actualText: this.props.selectedLine,
-            spokenText: this.props.transcription,
-        }
-
     }
-    evaluateExtraWords = (actualText = this.state.actualText, spokenText = this.state.spokenText) => {
-        actualText=this.state.actualText.split(" ").map((word) => word.match(/\w/g).join(""))
-        // .split(" ").map((word) => {word.match(/\w/g).join(" ")})
-        spokenText=this.state.spokenText.split(" ").map((word) => word.match(/\w/g).join(""))
 
+    // componentDidMount() {
+    //     // const me = this;
+    //     let correctWordsArray = this.evaluateMissedWords()
+    //     console.log(correctWordsArray)
+    //     let extraWordsArray = this.evaluateExtraWords()
+    //     console.log(extraWordsArray)
+
+    //     this.setState = ({
+    //         correctWordsArray: correctWordsArray,
+    //         extraWordsArray: extraWordsArray
+    //     })
+
+    //   }
+    evaluateExtraWords = () => {
+        let actualText=this.props.selectedLine.split(" ").map((word) => word.toLowerCase().match(/\w/g)).filter(validChar => validChar).map((word) => word.join(""))
+        // .split(" ").map((word) => {word.match(/\w/g).join(" ")})
+        let spokenText=this.props.transcription.split(" ").map((word) => word.toLowerCase().match(/\w/g)).filter(validChar => validChar).map((word) => word.join(""))
         let spokenGroups = []
+        // console.log(`cleaned actual text length: ${actualText.length}`)
+        // console.log(`cleaned spoken text length: ${spokenText.length}`)
+
 
         i = 0;
         j = 0;
@@ -42,12 +53,13 @@ class TextResultsComparison extends Component {
                 }
             }
         }
+        console.log(spokenGroups)
         return spokenGroups
     }
 
-    evaluateMissedWords = (actualText = this.state.actualText, spokenText = this.state.spokenText) => {
-        actualText=this.state.actualText.split(" ").map((word) => word.match(/\w/g).join(""))
-        spokenText=this.state.spokenText.split(" ").map((word) => word.match(/\w/g).join(""))
+    evaluateMissedWords = () => {
+       let actualText=this.props.selectedLine.split(" ").map((word) => word.toLowerCase().match(/\w/g)).filter(validChar => validChar).map((word) => word.join(""))
+       let spokenText=this.props.transcription.split(" ").map((word) => word.toLowerCase().match(/\w/g)).filter(validChar => validChar).map((word) => word.join(""))
 
         let textGroups = []
 
@@ -74,60 +86,96 @@ class TextResultsComparison extends Component {
                 }
             }
         }
+        console.log(textGroups)
         return textGroups
     }
 
-    render() {
 
+    findLonePunctuation = (textInput) => {
+        let punctuationArray = []
+        let splitty = textInput.split(" ")
+        for (let i=0; i < splitty.length; i++) {
+          if (splitty[i].match(/\w/g)===null) {
+            punctuationArray.push(i)
+        }
+      }
+      return punctuationArray
+      }
+      
+      concatPunctuation = (textInput) => {
+        let punctuationArray = this.findLonePunctuation(textInput)
+        let splitty = textInput.split(" ")
+        // console.log(splitty.length)
+        if (punctuationArray.length > 0) {
+      
+          for (let i=0; i < punctuationArray.length; i++) {
+            // console.log(punctuationArray[i])
+            let punctuationIndex = punctuationArray[i]
+            if (splitty[punctuationIndex-1]) {
+            splitty[punctuationIndex-1] = splitty[punctuationIndex-1].concat(splitty[punctuationIndex])
+            }
+            else if (splitty[punctuationIndex+1]) {
+              splitty[punctuationIndex+1] = splitty[punctuationIndex+1].concat(splitty[punctuationIndex])
+            }
+              splitty.splice(punctuationIndex, 1)
+          }
+      
+        }
+        //   console.log(splitty.length)
+      
+        return splitty
+      }
+
+    render() {
+        // I think I need this so that stuff doesn't render before the scripts do
+        if (!this.props.selectedLine || !this.props.transcription) {
+            return null;
+        }
 
         let correctWordsArray = this.evaluateMissedWords()
-        console.log(correctWordsArray)
+        // console.log(`correct words array: ${correctWordsArray}`)
         let extraWordsArray = this.evaluateExtraWords()
-        console.log(extraWordsArray)
+        // console.log(`non-extra words array: ${extraWordsArray}`)
+
+        // this.setState = ({
+        //     correctWordsArray: correctWordsArray,
+        //     extraWordsArray: extraWordsArray
+        // })
 
         const renderActualText = () => {
             let text = ""
-            let style = { color: 'red' }
-            let textArray = this.state.actualText.split(" ")
-            console.log(textArray)
+            let textArray = this.concatPunctuation(this.props.selectedLine)
+            console.log(`actual text length: ${textArray.length}`)
+            // console.log(textArray)
             
-
-            console.log(text)
-            return (<View style={{flexDirection: 'row'}}>
+            return (<View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
 
                 {textArray.map((word, index) => {
                     let style=""
                     if (correctWordsArray.includes(index)) {
                         style = {color: 'black'}
-                        console.log
                     }
                     else {
                         style = {color: 'red'}
                     }
+
                     return (<Text key={index} style={style}>{word} </Text>)
                 })}
                     </View>)
 
-            // return text
-
-            // return (<Text style={fontWeight: 'bold'}>'hello hi'</Text>)
         }
 
         const renderSpokenTranscript = () => {
             let text = ""
-            let style = { color: 'red' }
-            let spokenTranscriptArray = this.state.spokenText.split(" ")
-            console.log(spokenTranscriptArray)
-            
+            let spokenTranscriptArray = this.concatPunctuation(this.props.transcription)
+            console.log(`spoken transcript length: ${spokenTranscriptArray.length}`)
 
-            console.log(text)
-            return (<View style={{flexDirection: 'row'}}>
+            return (<View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
 
                 {spokenTranscriptArray.map((word, index) => {
                     let style=""
                     if (extraWordsArray.includes(index)) {
                         style = {color: 'black'}
-                        console.log
                     }
                     else {
                         style = {color: 'red'}
@@ -136,10 +184,9 @@ class TextResultsComparison extends Component {
                 })}
                     </View>)
 
-            // return text
-
-            // return (<Text style={fontWeight: 'bold'}>'hello hi'</Text>)
         }
+
+
 
 
 
@@ -150,6 +197,7 @@ class TextResultsComparison extends Component {
                 {renderActualText()}
                 <Text style={{fontWeight: 'bold'}}>You Said:</Text>
                  {renderSpokenTranscript()}
+                 {/* <Text>{this.state.extraWordsArray}</Text> */}
             </View>
         );
     }

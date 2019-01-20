@@ -73,6 +73,14 @@ setSelectedCharacter = (characterName) => {
   });
 }
 
+// setTester = (testerText) => {
+//     console.log(testerText)
+
+//   this.setState({
+//       tester: testerText
+//   });
+// }
+
 
 
 render() {
@@ -97,7 +105,6 @@ console.log(this.state.selectedCharacter)
       selectedScript={this.state.selectedScript}
       selectedCharacter={this.state.selectedCharacter}
       selectedLine={this.state.selectedLine}
-      getNewer = {() => this.state}
       selectScriptCB={this.setSelectedScript}
       selectCharacterCB={this.setSelectedCharacter}
       // {...this.state}

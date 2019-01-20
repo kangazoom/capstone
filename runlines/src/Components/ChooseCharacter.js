@@ -15,6 +15,7 @@ class ChooseCharacter extends Component {
     }
 
     render() {
+        
         const { selectedScript } = this.props;
 
         let characterList = [... new Set(selectedScript.script_data.map((eachLine) => {
