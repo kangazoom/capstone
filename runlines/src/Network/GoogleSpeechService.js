@@ -10,29 +10,9 @@ export default class GoogleSpeechService {
         timeout: 20000,
     })
 
-    // takes in audio data and config info as objects
-    // static recognize(recognitionAudio) {
-    //     return axios.post(127.0.0.1)
-    // }
 
-    // static passData = {
-    // "config": {
-    //     "encoding": "LINEAR16",
-    //     "languageCode": "en-US",
-    //     "sampleRateHertz": 22050
-
-    // }, "audio": {
-    //     "content": 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-
-    // },
-
-    // }
-
-
-    //   }
-    //       }
-
-    static discover(encodedAudio) {
+    static discover(encodedAudio, phrases) {
+        console.log(phrases)
         let axios = this.instance;
         return axios.post(`/v1/speech:recognize/?key=${keys.GCS_API_KEY}`, {
             "audio": {
@@ -41,9 +21,13 @@ export default class GoogleSpeechService {
             "config": {
                 "encoding": "MULAW",
                 "languageCode": "en-US",
-                "sampleRateHertz": 16000
-            },
-        }
+                "sampleRateHertz": 16000,
+                "enableAutomaticPunctuation": true,
+                "speechContexts": { "phrases": phrases }
+
+                }
+            }
+        
         ).then((response) => {
             console.log('testing headers good')
             console.log(response.data)

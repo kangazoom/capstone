@@ -118,7 +118,8 @@ class RecorderContainer extends Component {
         console.log(typeof data)
         if(!data) { return Promise.reject('We got not data from readFile') }
         console.log('encoding successful')
-        return GoogleSpeechService.discover(data);
+        let phrases = this.props.phrases
+        return GoogleSpeechService.discover(data, phrases);
     }).then((transcript) => {
       console.log(JSON.stringify(transcript));
       this.returnedTranscriptionResponse(transcript)
@@ -129,16 +130,6 @@ class RecorderContainer extends Component {
         console.log(this.sendTranscript)
         return Promise.reject('error')
       })
-
-    // add the encoded data into firestore
-            
-    // axios.get('https://us-central1-run-lines.cloudfunctions.net/googleSpeechRequest')
-    // .then((response) => {
-    //   console.log(response);
-    // })
-    // .catch(function ((error) => {
-    //   console.log(error);
-    // });
 
   }    
 
@@ -163,9 +154,11 @@ class RecorderContainer extends Component {
 
         <Button
           title="STOP"
-          disabled={!isRecording}
+          disabled={!isRecording || (isRecording && this.state.currentTime<1)}
           onPress={this.stopRecording}
         />
+
+        <Text>Start Over</Text>
 
   {/* <Text>{JSON.stringify(this.tryFunctions())}</Text> */}
 

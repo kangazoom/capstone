@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList, View, Text } from 'react-native';
+import { StyleSheet, FlatList, View, Text, Button } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
 
@@ -27,13 +27,24 @@ class ScriptContainer extends Component {
 
     onLinePress = (pressedLine) => {
         console.log(pressedLine)
-        Actions.testMemoryContainer({ selectedCharacter: this.props.characterName, selectedScript: this.props.selectedScript, selectedLine: pressedLine.item.line })
+        Actions.testMemoryContainer({ selectedCharacter: this.props.characterName, selectedScript: this.props.selectedScript, selectedLine: pressedLine.item.line, selectedLineIndex: pressedLine.item.index })
     }
+
+    // onTesterPress = (info) => {
+    //     console.log(info)
+    //     this.props.testerCB('IT WORKED')
+    // }
 
 
     render() {
+
         return (
             <View>
+                {/* <Button 
+                title="TEST ME"
+                onPress={this.onTesterPress}
+                />
+                <Text>{this.props.tester}</Text> */}
                 <FlatList
                     data={this.props.selectedScript.script_data}
                     renderItem={this.renderCell}

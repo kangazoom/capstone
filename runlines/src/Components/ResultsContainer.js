@@ -15,13 +15,11 @@ class ResultsContainer extends Component {
             transcription: this.props.transcription,
         }
     }
+
     render() {
         return (
             <View>
-                <Text>Actual Line: </Text>
-                <Text>{JSON.stringify(this.state.selectedLine)}</Text>
-                <Text>You Said: </Text>
-                <Text>{JSON.stringify(this.state.transcription)}</Text>
+                {/* <Button onPress={this.evaluateExtraWords} title="show me the extra words" /> */}
                 <TextResultsComparison selectedLine={this.state.selectedLine} transcription={this.state.transcription} />
                 {/* <Button
                     title='Your Previous Line' />
