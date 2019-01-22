@@ -35,30 +35,50 @@ export default class FireBaseService {
             })
     }
 
-    // ADD ENCODED AUDIO //
-    static addEncodedAudio(encodedAudioData) {
+    static addScript(scriptInfo) {
         console.log('we here')
-        let data = {
-            date_time_created: 'the time is now',
-            encoded_data: encodedAudioData
+        let script = {
+            title: scriptInfo.title,
+            lineList: scriptInfo.lineList
         };
 
-        let addDoc = RNFirebase.firestore().collection('encoded_audio')
-        addDoc.add(data)
-
-        return addDoc
-
-        // success? Promise? catch?
-
-        // Add a new document in collection "cities" with ID 'LA'
-        // let setDoc = RNFirebase.firestore().collection('encoded_audio').add(data)
-        // .then((ref) => {
-        //     console.log('added doc with ID', ref.id)
-        //     return Promise.resolve(ref)
-        // })
-        //     .catch((error) => {
-        //         console.log('uh oh')
-        //         return Promise.reject(error)
-        //     })
+        let addDoc = RNFirebase.firestore().collection('scripts')
+        addDoc.add(script)
+        .then((response) => {
+            console.log('successfully added new script')
+            return Promise.resolve(response)
+        })
+        .catch((error) => {
+            console.log('DID NOT ADD NEW SCRIPT ALERT ALERT')
+            return Promise.reject(error)
+        })
+        // return addDoc
     }
+
+    // ADD ENCODED AUDIO //
+    // static addEncodedAudio(encodedAudioData) {
+    //     console.log('we here')
+    //     let data = {
+    //         date_time_created: 'the time is now',
+    //         encoded_data: encodedAudioData
+    //     };
+
+    //     let addDoc = RNFirebase.firestore().collection('encoded_audio')
+    //     addDoc.add(data)
+
+    //     return addDoc
+
+    //     // success? Promise? catch?
+
+    //     // Add a new document in collection "cities" with ID 'LA'
+    //     // let setDoc = RNFirebase.firestore().collection('encoded_audio').add(data)
+    //     // .then((ref) => {
+    //     //     console.log('added doc with ID', ref.id)
+    //     //     return Promise.resolve(ref)
+    //     // })
+    //     //     .catch((error) => {
+    //     //         console.log('uh oh')
+    //     //         return Promise.reject(error)
+    //     //     })
+    // }
 }

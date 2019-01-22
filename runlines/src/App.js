@@ -135,7 +135,7 @@ console.log(this.state.selectedCharacter)
               component={ScriptContainer}
               scriptLines={this.state.scripts[1]}/>
           <Scene key="testMemoryContainer" component={TestMemoryContainer} title="Test Your Memory" />
-          <Scene key="resultsContainer" component={ResultsContainer} title="Results: XX% Accurate" />
+          <Scene key="resultsContainer" component={ResultsContainer} title="Results:" />
       </Scene>
   </Router>
  
