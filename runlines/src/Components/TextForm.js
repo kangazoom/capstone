@@ -3,6 +3,11 @@ import { StyleSheet, Button, View, Text, FlatList, TextInput, Picker } from 'rea
 import { Actions } from 'react-native-router-flux';
 import FireBaseService from '../Network/FireBaseService';
 
+import { Overlay } from 'react-native-elements';
+import MultiSelect from 'react-native-multiple-select';
+
+
+
 
 class TextForm extends Component {
     constructor(props) {
@@ -13,11 +18,13 @@ class TextForm extends Component {
             act: "",
             scene: "",
             description: "",
-            character: "",
-            characterList: ['hansel', 'gretel', 'stella'],
+            character: [],
+            characterList: [{ name: 'hansel' }, { name: 'gretel' }, { name: 'stella' }],
             line: "",
             lineList: [],
-            arrayHolder: [" "]
+            arrayHolder: [" "],
+            isVisible: false,
+            charHolder: []
         }
 
         this.array = [""]
@@ -29,6 +36,7 @@ class TextForm extends Component {
         })
 
     }
+
     // TODO:
     // build script_data:
     //[ {line: "blah", speaking_character: "missy elliott", index: 0}]
@@ -56,8 +64,63 @@ class TextForm extends Component {
     //     Actions.scriptContainer({ selectedCharacter: characterName, selectedScript: this.props.selectedScript })
     // }
 
-    addCharacter = () => {
+    // selectCharacter = () => {
+    //     console.log('ADD A CHAR')
+    //     return 'add a char'
+    // }
 
+    addCharacter = (character) => {
+        this.setState({ characterList: character })
+        this.onSelectedItemsChange(character)
+        console.log(character)
+        console.log([character[character.length - 1].name])
+        console.log(this.state.characterList)
+
+    }
+
+    onSelectedItemsChange = (character, index) => {
+        console.log('ADD A CHAR')
+        console.log(character)
+        console.log(index)
+        let recentSelection = character[character.length - 1]
+        let {charHolder} = this.state
+        charHolder[index] = recentSelection
+        // this.array[index] = recentSelection
+        // charHolder[index+1] = recentSelection
+        // charHolder[index] = character
+        // this.setState({ charHolder: this.array })
+        this.setState({charHolder })
+        // this.setState({ character: charHolder[index] })
+        // this.setState({ charHolder: [...charHolder, recentSelection] })
+
+        // this.setState({ character: charHolder })
+        // this.setState({ character: character })
+        // console.log(this.state.character)
+        console.log(this.array)
+        console.log(this.state.charHolder)
+        console.log([charHolder[index]])
+    }
+
+
+    testeroo = (character) => {
+        console.log('ADD A CHAR')
+        console.log(character)
+        // let recentSelection = character
+        // let {charHolder} = this.state
+        // charHolder = recentSelection
+        // charHolder[index+1] = recentSelection
+        // charHolder[index] = character
+        this.array.push(character[0])
+        this.setState({ charHolder: character })
+        // this.setState({character: })
+        // this.setState({ character: charHolder[index] })
+        // this.setState({ charHolder: [...charHolder, recentSelection] })
+
+        // this.setState({ character: charHolder })
+        // this.setState({ character: character })
+        // console.log(this.state.character)
+        console.log(this.state.charHolder)
+        console.log(this.array)
     }
 
     addLine = () => {
@@ -97,6 +160,9 @@ class TextForm extends Component {
         console.log(this.state.lineList)
         console.log(this.state.character)
 
+        let { charHolder } = this.state;
+
+
 
         // let lineListAmountArray = ["1"]
         // console.log(lineListAmountArray)
@@ -129,6 +195,8 @@ class TextForm extends Component {
                     value={this.state.author}
                     spellcheck={true}
                 />
+
+
                 {this.state.title && this.state.author ?
 
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -157,27 +225,38 @@ class TextForm extends Component {
                     </View>
                     : <Text>{' '}</Text>}
 
+                                    {/* <MultiSelect
+                                    single={true}
+                                    items={this.state.characterList}
+                                    uniqueKey="name"
+                                    //   ref={(component) => { this.multiSelect = component }}
+                                    onSelectedItemsChange={(text) => this.testeroo(text)}
+                                    selectedItems={this.array}
+                                    selectText={charHolder.toString()}
+                                    searchInputPlaceholderText="Search or Enter Characters..."
+                                    onChangeInput={(text) => console.log(text)}
+                                    hideSubmitButton={false}
+                                    // textInputProps={(text) => this.onSelectedItemsChange(text, index)}
+                                    //   tagRemoveIconColor="#CCC"
+                                    //   tagBorderColor="#CCC"
+                                    //   tagTextColor="#CCC"
+                                    //   selectedItemTextColor="#CCC"
+                                    //   selectedItemIconColor="#CCC"
+                                    itemTextColor="#000"
+                                    displayKey="name"
+                                    canAddItems={true}
+                                    onAddItem={this.addCharacter}
+                                    // flatListProps={[charHolder[index]]}
+                                //   searchInputStyle={{ color: '#CCC' }}
+                                //   submitButtonColor="#CCC"
+                                //   submitButtonText="Submit"
+                                /> */}
+
                 {/* {this.state.title && this.state.author ?
 
 
 
                     : <Text>{' '}</Text>} */}
-
-                {/* <Picker
-                    selectedValue={this.state.character}
-                    onValueChange={(itemValue, itemIndex) => this.setState({character: itemValue})}>
-                    <Picker.Item label="G" value="GG" />
-                    <Picker.Item label="D" value="DD" />
-                    <Picker.Item label="C" value="CC" />
-                    </Picker> */}
-
-<Picker
-selectedValue={this.state.character}
-onValueChange={(itemValue, itemIndex) => this.setState({character: itemValue})}>
-{this.state.characterList.map((item, index) => {
-   return (< Picker.Item label={item} value={item} key={index} />);
-})}  
-</Picker>
 
 
                 {/* <Button title="Save Scene"
@@ -189,12 +268,60 @@ onValueChange={(itemValue, itemIndex) => this.setState({character: itemValue})}>
                     // data={this.state.lineList}
                     data={this.state.arrayHolder}
 
-                    // extraData={this.state.arrayHolder}
+                    extraData={this.state}
                     keyExtractor={(index) => index.toString()}
                     renderItem={({ item, index }) => {
                         return (<View>
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                            <TextInput
+                            {/* <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}> */}
+
+                                <MultiSelect
+                                    single={true}
+                                    items={this.state.characterList}
+                                    uniqueKey="name"
+                                    //   ref={(component) => { this.multiSelect = component }}
+                                    onSelectedItemsChange={(text) => this.onSelectedItemsChange(text, index)}
+                                    selectedItems={[charHolder[index]]}
+                                    selectText={[charHolder[index]].toString()}
+                                    searchInputPlaceholderText="Search or Enter Characters..."
+                                    onChangeInput={(text) => console.log(text)}
+                                    hideSubmitButton={false}
+                                    // textInputProps={(text) => this.onSelectedItemsChange(text, index)}
+                                    //   tagRemoveIconColor="#CCC"
+                                    //   tagBorderColor="#CCC"
+                                    //   tagTextColor="#CCC"
+                                    //   selectedItemTextColor="#CCC"
+                                    //   selectedItemIconColor="#CCC"
+                                    itemTextColor="#000"
+                                    displayKey="name"
+                                    canAddItems={true}
+                                    onAddItem={this.addCharacter}
+                                    // flatListProps={[charHolder[index]]}
+                                //   searchInputStyle={{ color: '#CCC' }}
+                                //   submitButtonColor="#CCC"
+                                //   submitButtonText="Submit"
+                                />
+
+
+
+                {/* <Button
+                title="Select Character"
+                onPress={() => this.setState({ isVisible: true })}/>
+                                    <Overlay
+                    isVisible={this.state.isVisible}
+                    onBackdropPress={() => this.setState({ isVisible: false })}>
+                    <Text>Add a character</Text> */}
+                    {/* <FlatList
+
+// data={this.state.lineList}
+data={this.state.characterList}
+
+// extraData={this.state.arrayHolder}
+keyExtractor={(index) => index.toString()}
+renderItem={({ item, index }) => {
+    return (<Text>{item.name}</Text>)}} /> */}
+                {/* </Overlay> */}
+{/* 
+                                <TextInput
                                 placeholder={'enter character name'}
                                 onChangeText={
                                     text => {
@@ -210,8 +337,8 @@ onValueChange={(itemValue, itemIndex) => this.setState({character: itemValue})}>
                                 }
                             // value={this.state.lineList[index]}
                             />
-                            <Text>: </Text>
-                            </View>
+                                <Text>: </Text> */}
+                            {/* </View> */}
 
                             <TextInput
                                 placeholder={'enter new line'}
@@ -233,18 +360,18 @@ onValueChange={(itemValue, itemIndex) => this.setState({character: itemValue})}>
                             // value={this.state.lineList[index]}
                             />
 
-<Button title="Remove Line"
-                        onPress={
-                            this.removeLine(item)
-                            //() => {
-                            // lineListAmountArray=lineListAmountArray.push("new item")
-                            // this.setState({lineListAmountArray: [...this.state.lineListAmountArray, 'new item']})
-                            // [...lineListAmountArray, 'new item']
-                            // lineListAmountArray = [...lineListAmountArray, 'new item']
-    
-                            // }
-                        }
-                    />
+                            <Button title="Remove Line"
+                                onPress={
+                                    this.removeLine(item)
+                                    //() => {
+                                    // lineListAmountArray=lineListAmountArray.push("new item")
+                                    // this.setState({lineListAmountArray: [...this.state.lineListAmountArray, 'new item']})
+                                    // [...lineListAmountArray, 'new item']
+                                    // lineListAmountArray = [...lineListAmountArray, 'new item']
+
+                                    // }
+                                }
+                            />
                         </View>
 
 
