@@ -23,6 +23,10 @@ target 'runlines' do
 
 
 
+
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
   # target 'runlinesTests' do
   #   inherit! :search_paths
   #   # Pods for testing

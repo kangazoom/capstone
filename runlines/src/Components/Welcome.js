@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, FlatList, Button } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import { ThemeProvider } from 'react-native-elements';
 
-import RecorderContainer from './RecorderContainer';
-import GoogleSpeechService from '../Network/GoogleSpeechService'
+
+import TextForm from './TextForm'
 import FireBaseService from '../Network/FireBaseService';
 
-
-import UploadFile from './UploadFile';
 
 class Welcome extends Component {
     constructor(props) {
@@ -51,8 +50,9 @@ class Welcome extends Component {
                     }
                     keyExtractor={item => item.title}
                 />
+
+                <TextForm />
                 
-                <UploadFile />
 </View>
 
         );
