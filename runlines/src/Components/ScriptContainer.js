@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, FlatList, View, Text, Button } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
+import styles from "./Common/MainStyles";
 
 
 class ScriptContainer extends Component {
@@ -40,7 +41,7 @@ class ScriptContainer extends Component {
     render() {
 
         return (
-            <View style={styles.containerStyle}>
+            <View style={styles.container}>
                 {/* <Button 
                 title="TEST ME"
                 onPress={this.onTesterPress}
@@ -55,17 +56,5 @@ class ScriptContainer extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    containerStyle: {
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: '#fff'
-        },
-    headerStyle: {
-        fontSize: 20,
-    }
-});
 
 export default ScriptContainer;

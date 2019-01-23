@@ -5,6 +5,8 @@ import { Actions } from 'react-native-router-flux';
 import Header from './Common/Header'
 import RecorderContainer from './RecorderContainer';
 
+import styles from "./Common/MainStyles";
+
 
 class TestMemoryContainer extends Component {
     constructor(props) {
@@ -88,7 +90,7 @@ class TestMemoryContainer extends Component {
         console.log(this.state.selectedLine)
         console.log(this.state.transcription)
         return (
-            <View style={styles.containerStyle}>
+            <View style={styles.container}>
                 <Header>Cue Line: </Header>
                 {this.state.cueLine ? <Text>{this.state.cueLine.speaking_character}: {this.state.cueLine.line} </Text> : <Text>YOU HAVE THE FIRST LINE!</Text>}
                 <Header>Your Line:</Header>
@@ -106,17 +108,5 @@ class TestMemoryContainer extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    containerStyle: {
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: '#fff'
-        },
-    headerStyle: {
-        fontSize: 20,
-    }
-});
 
 export default TestMemoryContainer;
