@@ -3,7 +3,7 @@ import {TouchableOpacity, Text} from 'react-native';
 
 const TextSelectionItem = (props) => {
     return (
-        <TouchableOpacity onPress={props.onPress} style={styles.buttonStyle}>
+        <TouchableOpacity onPress={props.onPress} style={styles.containerStyle}>
         <Text style={styles.textStyle}>
         {props.children}
         </Text>
@@ -12,7 +12,7 @@ const TextSelectionItem = (props) => {
 }
 
 const styles = {
-    buttonStyle: {
+    containerStyle: {
     backgroundColor: '#00D0FF',
     borderWidth: 1,
     borderRadius: 2,

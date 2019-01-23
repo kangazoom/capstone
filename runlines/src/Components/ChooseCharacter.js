@@ -3,12 +3,14 @@ import { StyleSheet, Button, View, Text, FlatList } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
 import TextSelectionItem from './Common/TextSelectionItem'
+import styles from "./Common/MainStyles";
 
 
 class ChooseCharacter extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            selectedScript: props.selectedScript,
             characterName: props.characterName,
             loading: false,
         }
@@ -37,7 +39,7 @@ class ChooseCharacter extends Component {
         }))];
 
         return (
-            <View style={styles.containerStyle}>
+            <View style={styles.container}>
                 <FlatList
                     data={characterList}
                     renderItem={({ item }) =>
@@ -53,17 +55,5 @@ class ChooseCharacter extends Component {
 
     }
 }
-
-const styles = StyleSheet.create({
-    containerStyle: {
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: '#fff'
-        },
-    headerStyle: {
-        fontSize: 20,
-    }
-});
 
 export default ChooseCharacter;

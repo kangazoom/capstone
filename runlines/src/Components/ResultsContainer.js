@@ -4,6 +4,8 @@ import { Actions } from 'react-native-router-flux';
 
 import TextResultsComparison from './TextResultsComparison';
 
+import styles from "./Common/MainStyles";
+
 
 class ResultsContainer extends Component {
     constructor(props) {
@@ -16,23 +18,11 @@ class ResultsContainer extends Component {
 
     render() {
         return (
-            <View style={styles.containerStyle}>
+            <View style={styles.container}>
                 <TextResultsComparison selectedLine={this.state.selectedLine} transcription={this.state.transcription} />
             </View>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    containerStyle: {
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: '#fff'
-        },
-    headerStyle: {
-        fontSize: 20,
-    }
-});
 
 export default ResultsContainer;
