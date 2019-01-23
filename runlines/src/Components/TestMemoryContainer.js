@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Button, View, Text } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
+import Header from './Common/Header'
 import RecorderContainer from './RecorderContainer';
 
 
@@ -87,12 +88,12 @@ class TestMemoryContainer extends Component {
         console.log(this.state.selectedLine)
         console.log(this.state.transcription)
         return (
-            <View>
-                
-                {this.state.cueLine ? <Text><Text>Cue Line: </Text>{this.state.cueLine.speaking_character}: {this.state.cueLine.line} </Text> : <Text>YOU HAVE THE FIRST LINE!</Text>}
-                <Text>Your Line:</Text>
+            <View style={styles.containerStyle}>
+                <Header>Cue Line: </Header>
+                {this.state.cueLine ? <Text>{this.state.cueLine.speaking_character}: {this.state.cueLine.line} </Text> : <Text>YOU HAVE THE FIRST LINE!</Text>}
+                <Header>Your Line:</Header>
                 <Text>{this.state.selectedLine}</Text>
-                <Text>Record</Text>
+                <Header>Record</Header>
                 <RecorderContainer returnedTranscriptionResponseCB={this.transcriptionResponse} phrases={phrases}/>
                 {/* <Text>Returned Transcription: {this.state.transcription}</Text> */}
                 {/* <Text>Parsed Transcription:</Text> */}
@@ -105,5 +106,17 @@ class TestMemoryContainer extends Component {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    containerStyle: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: '#fff'
+        },
+    headerStyle: {
+        fontSize: 20,
+    }
+});
 
 export default TestMemoryContainer;

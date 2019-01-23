@@ -37,15 +37,24 @@ export default class FireBaseService {
 
     static addScript(scriptInfo) {
         console.log('we here')
+        let script_data = scriptInfo.lineList.map((line, index) => {
+            return {
+            "index": index,
+            "line": line,
+            "speaking_character": scriptInfo.charHolder[index],
+        }
+        })
         let script = {
             title: scriptInfo.title,
-            lineList: scriptInfo.lineList
+            author: scriptInfo.author,
+            script_data: script_data
         };
 
         let addDoc = RNFirebase.firestore().collection('scripts')
         addDoc.add(script)
         .then((response) => {
             console.log('successfully added new script')
+            console.log(response)
             return Promise.resolve(response)
         })
         .catch((error) => {
