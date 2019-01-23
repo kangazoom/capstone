@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
+import Header from './Common/Header'
+
 
 class TextResultsComparison extends Component {
     constructor(props) {
@@ -193,11 +195,10 @@ class TextResultsComparison extends Component {
 
         return (
             <View>
-                <Text style={{fontWeight: 'bold'}}>Actual Line:</Text>
+                <Header>Actual Line:</Header>
                 {renderActualText()}
-                <Text style={{fontWeight: 'bold'}}>You Said:</Text>
+                <Header>You Said:</Header>
                  {renderSpokenTranscript()}
-                 {/* <Text>{this.state.extraWordsArray}</Text> */}
             </View>
         );
     }

@@ -2,15 +2,29 @@ import React, { Component } from 'react';
 import { StyleSheet, Button, View, Text, FlatList } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
+import TextSelectionItem from './Common/TextSelectionItem'
+
+
 class ChooseCharacter extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            characterName: props.characterName
+            characterName: props.characterName,
+            loading: false,
         }
     }
 
+    // renderButton() {
+    //     if (this.state.loading) {
+    //         return <Spinner/>
+    //     }
+    //     return (
+
+    //     )
+    // }
+
     onCharacterPress = (characterName) => {
+
         Actions.scriptContainer({ selectedCharacter: characterName, selectedScript: this.props.selectedScript })
     }
 
@@ -23,17 +37,13 @@ class ChooseCharacter extends Component {
         }))];
 
         return (
-            <View>
-                <Text>CHOOSE A CHARACTER:</Text>
+            <View style={styles.containerStyle}>
                 <FlatList
                     data={characterList}
                     renderItem={({ item }) =>
-                        <Button
-                            title={`${item}`}
-                            onPress={() => {
-                                this.onCharacterPress(item)
-                            }}
-                        />
+                    <TextSelectionItem onPress={() => this.onCharacterPress(item)}>
+                    {item}
+                    </TextSelectionItem>
                     }
                     keyExtractor={item => item}
 
@@ -43,5 +53,17 @@ class ChooseCharacter extends Component {
 
     }
 }
+
+const styles = StyleSheet.create({
+    containerStyle: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: '#fff'
+        },
+    headerStyle: {
+        fontSize: 20,
+    }
+});
 
 export default ChooseCharacter;

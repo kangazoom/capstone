@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, FlatList, Button } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { ThemeProvider } from 'react-native-elements';
 
+// import CardSection from './Common/CardSection'
+import TextSelectionItem from './Common/TextSelectionItem'
+import Header from './Common/Header'
+import Button from './Common/Button'
 
 import TextForm from './TextForm'
 import FireBaseService from '../Network/FireBaseService';
@@ -35,23 +39,21 @@ class Welcome extends Component {
 
 
         return (
-            <View>
-                <Text style={styles.headerStyle}>You'll learn your lines in no time!</Text>
-                <Text style={styles.headerStyle}>Choose or upload a PDF to start!</Text>
-                <Text style={styles.headerStyle}>Choose  Script: </Text>
+            <View style={styles.containerStyle}>
+                <Button onPress={Actions.textForm}>Add A Scene</Button>
+                <Header>Or choose a scene below: </Header>
 
                 <FlatList
                     data={scriptCollection}
                     renderItem={({ item }) =>
-                        <Button
-                            title={`${item.title} by ${item.author}`}
-                            onPress={() => this.onScriptPress(item)}
-                        />
+                    <TextSelectionItem onPress={() => this.onScriptPress(item)}>
+                        {item.title} by {item.author}
+                        </TextSelectionItem>
                     }
                     keyExtractor={item => item.title}
                 />
 
-                <TextForm />
+                {/* <TextForm /> */}
                 
 </View>
 
@@ -60,9 +62,13 @@ class Welcome extends Component {
 }
 
 const styles = StyleSheet.create({
-    headerStyle: {
-        fontSize: 20,
-    }
+    containerStyle: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: '#fff'
+        },
+
 });
 
 export default Welcome;

@@ -19,7 +19,7 @@ class TextForm extends Component {
             scene: "",
             description: "",
             character: [],
-            characterList: [{ name: 'hansel' }, { name: 'gretel' }, { name: 'stella' }],
+            characterList: [],
             line: "",
             lineList: [],
             arrayHolder: [" "],
@@ -48,15 +48,18 @@ class TextForm extends Component {
     //   }
 
     createScene = () => {
+        // let {line} = this.state
         // const me = this;
         FireBaseService.initializeService()
         FireBaseService.addScript(this.state)
+        // Actions.pop({refresh: {}})
         // .then((response) => {
         // console.log(response)
+        Actions.pop();
         // })
         // .catch((error) => {
-        //     console.log(error)
-        //     // todo: error handling
+            // console.log(error)
+            // todo: error handling
         // })
     }
 
@@ -99,28 +102,6 @@ class TextForm extends Component {
         console.log(this.array)
         console.log(this.state.charHolder)
         console.log([charHolder[index]])
-    }
-
-
-    testeroo = (character) => {
-        console.log('ADD A CHAR')
-        console.log(character)
-        // let recentSelection = character
-        // let {charHolder} = this.state
-        // charHolder = recentSelection
-        // charHolder[index+1] = recentSelection
-        // charHolder[index] = character
-        this.array.push(character[0])
-        this.setState({ charHolder: character })
-        // this.setState({character: })
-        // this.setState({ character: charHolder[index] })
-        // this.setState({ charHolder: [...charHolder, recentSelection] })
-
-        // this.setState({ character: charHolder })
-        // this.setState({ character: character })
-        // console.log(this.state.character)
-        console.log(this.state.charHolder)
-        console.log(this.array)
     }
 
     addLine = () => {
@@ -225,32 +206,6 @@ class TextForm extends Component {
                     </View>
                     : <Text>{' '}</Text>}
 
-                                    {/* <MultiSelect
-                                    single={true}
-                                    items={this.state.characterList}
-                                    uniqueKey="name"
-                                    //   ref={(component) => { this.multiSelect = component }}
-                                    onSelectedItemsChange={(text) => this.testeroo(text)}
-                                    selectedItems={this.array}
-                                    selectText={charHolder.toString()}
-                                    searchInputPlaceholderText="Search or Enter Characters..."
-                                    onChangeInput={(text) => console.log(text)}
-                                    hideSubmitButton={false}
-                                    // textInputProps={(text) => this.onSelectedItemsChange(text, index)}
-                                    //   tagRemoveIconColor="#CCC"
-                                    //   tagBorderColor="#CCC"
-                                    //   tagTextColor="#CCC"
-                                    //   selectedItemTextColor="#CCC"
-                                    //   selectedItemIconColor="#CCC"
-                                    itemTextColor="#000"
-                                    displayKey="name"
-                                    canAddItems={true}
-                                    onAddItem={this.addCharacter}
-                                    // flatListProps={[charHolder[index]]}
-                                //   searchInputStyle={{ color: '#CCC' }}
-                                //   submitButtonColor="#CCC"
-                                //   submitButtonText="Submit"
-                                /> */}
 
                 {/* {this.state.title && this.state.author ?
 
@@ -258,10 +213,22 @@ class TextForm extends Component {
 
                     : <Text>{' '}</Text>} */}
 
+<Button title="Add A Line"
+                    onPress={
+                        this.addLine
+                        //() => {
+                        // lineListAmountArray=lineListAmountArray.push("new item")
+                        // this.setState({lineListAmountArray: [...this.state.lineListAmountArray, 'new item']})
+                        // [...lineListAmountArray, 'new item']
+                        // lineListAmountArray = [...lineListAmountArray, 'new item']
 
-                {/* <Button title="Save Scene"
+                        // }
+                    }
+                />
+
+                    <Button title="Save Scene"
                     onPress={this.createScene}
-                /> */}
+                />
 
                 <FlatList
 
@@ -300,44 +267,6 @@ class TextForm extends Component {
                                 //   submitButtonColor="#CCC"
                                 //   submitButtonText="Submit"
                                 />
-
-
-
-                {/* <Button
-                title="Select Character"
-                onPress={() => this.setState({ isVisible: true })}/>
-                                    <Overlay
-                    isVisible={this.state.isVisible}
-                    onBackdropPress={() => this.setState({ isVisible: false })}>
-                    <Text>Add a character</Text> */}
-                    {/* <FlatList
-
-// data={this.state.lineList}
-data={this.state.characterList}
-
-// extraData={this.state.arrayHolder}
-keyExtractor={(index) => index.toString()}
-renderItem={({ item, index }) => {
-    return (<Text>{item.name}</Text>)}} /> */}
-                {/* </Overlay> */}
-{/* 
-                                <TextInput
-                                placeholder={'enter character name'}
-                                onChangeText={
-                                    text => {
-                                        // this.setState({line: text})
-                                        // this.onFieldChange(`lineList${index}`)
-                                        let { characterList } = this.state;
-                                        characterList[index] = text;
-                                        this.setState({
-                                            characterList
-                                        });
-                                        // this.onFieldChange("lineList")
-                                    }
-                                }
-                            // value={this.state.lineList[index]}
-                            />
-                                <Text>: </Text> */}
                             {/* </View> */}
 
                             <TextInput
@@ -380,18 +309,6 @@ renderItem={({ item, index }) => {
 
 
                     }} />
-                <Button title="Add Another Line"
-                    onPress={
-                        this.addLine
-                        //() => {
-                        // lineListAmountArray=lineListAmountArray.push("new item")
-                        // this.setState({lineListAmountArray: [...this.state.lineListAmountArray, 'new item']})
-                        // [...lineListAmountArray, 'new item']
-                        // lineListAmountArray = [...lineListAmountArray, 'new item']
-
-                        // }
-                    }
-                />
 
 
             </View>

@@ -9,31 +9,30 @@ class ResultsContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // selectedLine: props.selectedLine,
-            // transcription: props.transcription
-            selectedLine: this.props.selectedLine,
-            transcription: this.props.transcription,
+            selectedLine: props.selectedLine,
+            transcription: props.transcription,
         }
     }
 
     render() {
         return (
-            <View>
-                {/* <Button onPress={this.evaluateExtraWords} title="show me the extra words" /> */}
+            <View style={styles.containerStyle}>
                 <TextResultsComparison selectedLine={this.state.selectedLine} transcription={this.state.transcription} />
-                {/* <Button
-                    title='Your Previous Line' />
-                <Button
-                    // onPress={Actions.testMemoryContainer}
-                    title='Try Again' />
-                <Button
-                    // onPress={Actions.scriptContainer}
-                    title='View Script' />
-                <Button
-                    title='Your Next Line' /> */}
             </View>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    containerStyle: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: '#fff'
+        },
+    headerStyle: {
+        fontSize: 20,
+    }
+});
 
 export default ResultsContainer;
