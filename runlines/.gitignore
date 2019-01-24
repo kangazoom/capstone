@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 
 # Created by https://www.gitignore.io/api/reactnative
 # Edit at https://www.gitignore.io/?templates=reactnative
+=======
+# edited from gitignore.io
+>>>>>>> bce4827dc2a3a46edca49b37b40f99bb3ba07b2f
 
 ### ReactNative ###
 # React Native Stack Base
@@ -256,3 +260,5 @@ keys.json
 .vscode
 .vscode/
 ./ios/runlines/info.plist
+../GoogleService-Info.plist
+
