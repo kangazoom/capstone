@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Button, View, Text } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
-import Header from './Common/Header'
+import Heading from './Common/Heading';
 import RecorderContainer from './RecorderContainer';
-
 import styles from "./Common/MainStyles";
 
 
@@ -12,99 +11,119 @@ class TestMemoryContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            selectedScript: props.selectedScript,
+            selectedCharacter: props.selectedCharacter,
             selectedLine: props.selectedLine,
-            cueLine: props.selectedScript.script_data[props.selectedLineIndex-1],
-            transcription: null
+            cueLineInfo: props.selectedScript.script_data[props.selectedLineIndex - 1],
+            transcription: null,
+            showUserLine: false,
         }
     }
-    
-        transcriptionResponse = (data) => {
-            let lineAsString = "";
-            if (data!==null) {
+
+    transcriptionResponse = (data) => {
+        let lineAsString = "";
+        if (data !== {} && data !== null) {
             let results = data['results'];
             for (let result of results) {
                 lineAsString += result["alternatives"][0]["transcript"]
             }
-
             this.setState({
-                transcription: lineAsString
-              })
-              Actions.resultsContainer({selectedCharacter: this.props.selectedCharacter, selectedScript: this.props.selectedScript, selectedLine: this.state.selectedLine, transcription: this.state.transcription})
+                transcription: lineAsString,
+            })
 
-
+            Actions.resultsContainer({
+                selectedScript: this.state.selectedScript,
+                selectedCharacter: this.state.selectedCharacter,
+                selectedLine: this.state.selectedLine,
+                transcription: this.state.transcription
+            })
         }
-            else {
-                return 'TRY AGAIN'
+    }
+
+    // create suggestion phrases to give Google Speech API some hints and improve accuracy
+    wordSuggestionBuckets = () => {
+        let actualTextWordsArray = this.state.selectedLine.split(" ");
+        let totalChars = 0
+        let charCounter = 0;
+        let bigBucket = [];
+        let miniBucket = "";
+        let bucketCounter = 0;
+        let wordCounter = 0
+
+        for (let word of actualTextWordsArray) {
+            charCounter += (word.length + 1)
+            totalChars += (word.length + 1)
+            wordCounter += 1
+
+            if (totalChars >= 10000 || wordCounter >= 500) {
+                break
             }
-
-          }
-
-          wordSuggestionBuckets = () => {
-            let actualTextWordsArray = this.state.selectedLine.split(" ");
-            let totalChars = 0
-            let charCounter = 0;
-            let bigBucket = [];
-            let miniBucket = ""
-            let bucketCounter = 0;
-            let wordCounter = 0
-
-            for (let word of actualTextWordsArray) {
-                
-                charCounter += (word.length+1)
-                totalChars += (word.length+1)
-                wordCounter += 1
-
-                if (totalChars >= 10000 || wordCounter >= 500) {
-                    break
-                }
-
-                if (charCounter > 100) {
-                    charCounter = 0
-                    charCounter += (word.length+1)
-                    bigBucket.push(miniBucket)
-                    miniBucket= ""
-                    
-                }
-                miniBucket += `${word} `
+            if (charCounter > 100) {
+                charCounter = 0
+                charCounter += (word.length + 1)
+                bigBucket.push(miniBucket)
+                miniBucket = ""
             }
-            bigBucket.push(miniBucket)
-            console.log(bigBucket)
-            return bigBucket;
+            miniBucket += `${word} `
+        }
+        bigBucket.push(miniBucket)
+        return bigBucket;
+    }
 
-          }
+    toggleShowLine = () => {
+        if (this.state.showUserLine) {
+            this.setState({
+                showUserLine: false
+            })
+        }
+        else {
+            this.setState({
+                showUserLine: true
+            })
+        }
+    }
 
-
-
-
-        //   onResultsPress = () => {
-        //     //   Actions.resultsContainer()
-        //     // Actions.resultsContainer({selectedCharacter: this.props.selectedCharacter, selectedScript: this.props.selectedScript, selectedLine: this.state.selectedLine, transcription: this.state.transcription})
-        //     // hard coding:
-        //     Actions.resultsContainer({selectedCharacter: this.props.selectedCharacter, selectedScript: this.props.selectedScript, selectedLine: this.state.selectedLine, transcription: this.state.transcription})
-        // }
-    
     render() {
-        console.log(this.state.cueLine)
-        let phrases = this.wordSuggestionBuckets()
-        
-        console.log(this.state.selectedLine)
-        console.log(this.state.transcription)
-        return (
-            <View style={styles.container}>
-                <Header>Cue Line: </Header>
-                {this.state.cueLine ? <Text>{this.state.cueLine.speaking_character}: {this.state.cueLine.line} </Text> : <Text>YOU HAVE THE FIRST LINE!</Text>}
-                <Header>Your Line:</Header>
-                <Text>{this.state.selectedLine}</Text>
-                <Header>Record</Header>
-                <RecorderContainer returnedTranscriptionResponseCB={this.transcriptionResponse} phrases={phrases}/>
-                {/* <Text>Returned Transcription: {this.state.transcription}</Text> */}
-                {/* <Text>Parsed Transcription:</Text> */}
-                {/* <Button
-                title="CONTINUE TO NEXT PAGE (CHANGE LATER)"
-                onPress={this.onResultsPress}
-                /> */}
+        let {
+            selectedScript,
+            showUserLine
+        } = this.state;
 
-            </View>
+        let phrases = this.wordSuggestionBuckets()
+
+        let userLineBGColor = () => {
+            if (showUserLine === true) {
+                return '#fff'
+            }
+            else {
+                return '#000'
+            }
+        }
+
+        return (
+            <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+                <View style={styles.container}>
+                    <Heading>{selectedScript.title} by {selectedScript.author}</Heading>
+                    <Text style={{ marginBottom: 5 }}>{selectedScript.description}</Text>
+
+                    <Heading>Cue Line: </Heading>
+                    {this.state.cueLineInfo ?
+                        <Text>{this.state.cueLineInfo.speaking_character}: {this.state.cueLineInfo.line} </Text>
+                        : <Text>YOU HAVE THE FIRST LINE!</Text>}
+
+                    <Heading>Your Line:</Heading>
+                    <TouchableOpacity
+                        onPress={this.toggleShowLine}
+                        style={{ backgroundColor: userLineBGColor() }}
+                    >
+                        {showUserLine ?
+                            <Text>{this.state.selectedLine}</Text> :
+                            <Text style={{ color: '#FFE251', padding: 10 }}>Tap to show/hide line</Text>}
+                    </TouchableOpacity>
+
+                    <RecorderContainer returnedTranscriptionResponseCB={this.transcriptionResponse} phrases={phrases} />
+                </View>
+            </ScrollView>
         );
     }
 }

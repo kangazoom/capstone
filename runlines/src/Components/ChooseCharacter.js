@@ -3,6 +3,7 @@ import { StyleSheet, Button, View, Text, FlatList } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
 import TextSelectionItem from './Common/TextSelectionItem'
+import Heading from './Common/Heading';
 import styles from "./Common/MainStyles";
 
 
@@ -11,27 +12,17 @@ class ChooseCharacter extends Component {
         super(props);
         this.state = {
             selectedScript: props.selectedScript,
-            characterName: props.characterName,
-            loading: false,
         }
     }
 
-    // renderButton() {
-    //     if (this.state.loading) {
-    //         return <Spinner/>
-    //     }
-    //     return (
-
-    //     )
-    // }
-
     onCharacterPress = (characterName) => {
-
-        Actions.scriptContainer({ selectedCharacter: characterName, selectedScript: this.props.selectedScript })
+        Actions.scriptContainer({ 
+            selectedScript: this.props.selectedScript,
+            selectedCharacter: characterName
+        })
     }
 
     render() {
-        
         const { selectedScript } = this.props;
 
         let characterList = [... new Set(selectedScript.script_data.map((eachLine) => {
@@ -40,19 +31,19 @@ class ChooseCharacter extends Component {
 
         return (
             <View style={styles.container}>
+                <Heading>{this.props.selectedScript.title} by {this.props.selectedScript.author}</Heading>
+                <Text style={{marginBottom: 5}}>{this.props.selectedScript.description}</Text>
                 <FlatList
                     data={characterList}
+                    keyExtractor={item => item}
                     renderItem={({ item }) =>
                     <TextSelectionItem onPress={() => this.onCharacterPress(item)}>
                     {item}
                     </TextSelectionItem>
                     }
-                    keyExtractor={item => item}
-
                 />
             </View>
         );
-
     }
 }
 

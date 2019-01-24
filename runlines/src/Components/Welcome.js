@@ -4,10 +4,11 @@ import { Actions } from 'react-native-router-flux';
 import { Overlay } from 'react-native-elements';
 
 import FireBaseService from '../Network/FireBaseService';
-import TextSelectionItem from './Common/TextSelectionItem'
-import Header from './Common/Header'
-import Button from './Common/Button'
-import styles from "./Common/MainStyles";
+import TextSelectionItem from './Common/TextSelectionItem';
+import Heading from './Common/Heading';
+import Button from './Common/Button';
+import styles from './Common/MainStyles';
+import ErrorOverlay from './Common/ErrorOverlay';
 
 class Welcome extends Component {
     constructor() {
@@ -17,117 +18,92 @@ class Welcome extends Component {
             selectedScript: null,
             isVisible: false,
             statusMessage: null,
-            isLoading: false,
+            isLoading: true,
         }
-        this.statusColor = null
     }
-
-    // TODO: remove or keep?
-    // advance to ChooseCharacter component
-    // onScriptPress = (item) => {
-    //     Actions.chooseCharacter({selectedScript: item});
-    // }
 
     // grab scripts
     componentDidMount() {
         const self = this;
-        self.setState({
-            isLoading: true
-        });
 
         FireBaseService.initializeService()
         FireBaseService.getScripts()
             .then((scriptsArray) => {
                 self.setState({
                     scriptCollection: scriptsArray,
-                    isVisible: true,
-                    statusMessage: 'success!'
+                    statusMessage: 'success!',
                 });
-                // self.clearSuccessStatus()
-
             })
             .catch((error) => {
                 self.setState({
                     isVisible: true,
-                    statusMessage: error
+                    statusMessage: error,
                 });
             })
-
-        self.setState({
+        this.setState({
             isLoading: false
         });
     }
 
-    // TODO: how is this workingggg?
-    clearSuccessStatus = setInterval(() => {
-        this.statusColor = 'green'
-        this.setState({
-            isVisible: false
-        });
-    }, 3000)
-
-
     renderCell(cellData) {
         let scriptObject = cellData.item
         return (
-            <TextSelectionItem onPress={() => Actions.chooseCharacter({ selectedScript: scriptObject })}>
+            <TextSelectionItem
+                onPress={() => Actions.chooseCharacter({ selectedScript: scriptObject })}
+            >
                 {scriptObject.title} by {scriptObject.author}
             </TextSelectionItem>
         );
     }
 
     render() {
-        let { scriptCollection, statusMessage, isLoading } = this.state;
+        let {
+            scriptCollection,
+            isLoading,
+            isVisible,
+            statusMessage,
+        } = this.state;
 
         let displayStatusMessage = () => {
             if (statusMessage === 'success!') {
-                this.statusColor = 'green'
                 return 'Successfully loaded scripts'
             }
             else {
-                this.statusColor = 'red'
-                return `Encountered an error: ${statusMessage}`
+                return
             }
         }
-            
-        
-console.log(this.statusColor)
-        // TODO: error handling/loading
-        // view shouldn't render until the scripts come in
-        // what if there are no scripts??
-        if (scriptCollection.length === 0) {
-            return (<ActivityIndicator size="large" color="#00D0FF" />
-            )
-        }
-        // if (scriptCollection.length === 0 && isLoading===true) {
-        //     return (<ActivityIndicator size="large" color="#00D0FF" />)
-        // }
-        //     else if (scriptCollection.length === 0 && isLoading===false) {
-        //     return (<Text>Add some scenes to get started!</Text>)
-        //     }
+
+        let displayErrorMessage = statusMessage!=='success!' ? `Encountered an error: ${statusMessage}` : ""
 
         return (
             <View style={styles.container}>
-                <Overlay
-                    isVisible={this.state.isVisible}
-                    windowBackgroundColor='transparent'
-                      overlayBackgroundColor='blue'
-                      width="auto"
-                      height="auto"
-                    onBackdropPress={() => this.setState({ isVisible: false })}
-
-                >
-                    <Text style={{backgroundColor: this.state.statusColor}}>{displayStatusMessage()}</Text>
-                </Overlay>
-
 
                 <Button onPress={Actions.textForm}>Add A Scene</Button>
-                <Header>Or choose a scene below: </Header>
-                <FlatList
-                    data={scriptCollection}
-                    keyExtractor={item => item.id}
-                    renderItem={this.renderCell}
-                />
+                <Heading>Or choose a scene below: </Heading>
+
+                {isLoading === true &&
+                    <ActivityIndicator size="large" color="#00D0FF" />
+
+                }
+
+                {scriptCollection.length > 0 &&
+                    <FlatList
+                        data={scriptCollection}
+                        keyExtractor={item => item.id}
+                        renderItem={this.renderCell}
+                    />
+                }
+
+                {scriptCollection.length === 0 && isLoading === false &&
+                    <Text>To get started, add some scenes!</Text>
+                }
+
+                <ErrorOverlay
+                    isVisible={isVisible}                    
+                    onBackdropPress={() => this.setState({ isVisible: false })}
+                >
+                    <Text>{displayErrorMessage}</Text>
+                </ErrorOverlay>
             </View>
         );
     }
