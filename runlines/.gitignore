@@ -253,3 +253,4 @@ fastlane/readme.md
 keys.json
 ../GoogleService-Info.plist
 ./ios/runlines/Info.plist
+.vscode/
