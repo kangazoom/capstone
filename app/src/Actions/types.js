@@ -1,1 +1,0 @@
-// export const GRAB_SCRIPT_SUCCESS = 'grab_script_success'
