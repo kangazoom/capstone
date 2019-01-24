@@ -1,204 +1,162 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
-import { Actions } from 'react-native-router-flux';
+import { View, Text } from 'react-native';
 
-import Header from './Common/Header'
-
+import Heading from './Common/Heading'
 
 class TextResultsComparison extends Component {
     constructor(props) {
         super(props);
     }
 
-    // componentDidMount() {
-    //     // const me = this;
-    //     let correctWordsArray = this.evaluateMissedWords()
-    //     console.log(correctWordsArray)
-    //     let extraWordsArray = this.evaluateExtraWords()
-    //     console.log(extraWordsArray)
+    cleanWords = (words) => {
+        return words.split(" ").map((word) => {
+            return word.toLowerCase().match(/\w/g)
+        }).filter(validChar => validChar).map((word) => word.join(""))
+    }
 
-    //     this.setState = ({
-    //         correctWordsArray: correctWordsArray,
-    //         extraWordsArray: extraWordsArray
-    //     })
-
-    //   }
+    // returns indices of non-extra words based on transcription
+    // (mostly - not a perfect diff function by any means, but generally does ok for the average case)
     evaluateExtraWords = () => {
-        let actualText=this.props.selectedLine.split(" ").map((word) => word.toLowerCase().match(/\w/g)).filter(validChar => validChar).map((word) => word.join(""))
-        // .split(" ").map((word) => {word.match(/\w/g).join(" ")})
-        let spokenText=this.props.transcription.split(" ").map((word) => word.toLowerCase().match(/\w/g)).filter(validChar => validChar).map((word) => word.join(""))
+        let actualText = this.cleanWords(this.props.selectedLine)
+        let spokenText = this.cleanWords(this.props.transcription)
         let spokenGroups = []
-        // console.log(`cleaned actual text length: ${actualText.length}`)
-        // console.log(`cleaned spoken text length: ${spokenText.length}`)
-
-
-        i = 0;
-        j = 0;
+        let i = 0, j = 0;
 
         while (i < spokenText.length) {
-
-            // matching, at same index
             if (spokenText[i] === actualText[j]) {
-                // good spoken
                 spokenGroups.push(i)
-
-                i++
-                j++
+                i++ , j++
             }
             else if (spokenText[i] !== actualText[j]) {
                 if (j < actualText.length) {
                     j++
                 }
                 else {
-                    i++
-                    j = 0
+                    i++ , j = 0
                 }
             }
         }
-        console.log(spokenGroups)
         return spokenGroups
     }
 
+    // returns indices of non-missed words based on the original selected line text
+    // (mostly - not a perfect diff function by any means, but generally does ok for the average case)
     evaluateMissedWords = () => {
-       let actualText=this.props.selectedLine.split(" ").map((word) => word.toLowerCase().match(/\w/g)).filter(validChar => validChar).map((word) => word.join(""))
-       let spokenText=this.props.transcription.split(" ").map((word) => word.toLowerCase().match(/\w/g)).filter(validChar => validChar).map((word) => word.join(""))
-
+        let actualText = this.cleanWords(this.props.selectedLine)
+        let spokenText = this.cleanWords(this.props.transcription)
         let textGroups = []
-
-        i = 0;
-        j = 0;
+        let i = 0, j = 0;
 
         while (i < spokenText.length) {
-
-            // matching, at same index
             if (spokenText[i] === actualText[j]) {
-                // good match text
                 textGroups.push(j)
-
-                i++
-                j++
+                i++ , j++
             }
             else if (spokenText[i] !== actualText[j]) {
                 if (j < actualText.length) {
                     j++
                 }
                 else {
-                    i++
-                    j = 0
+                    i++ , j = 0
                 }
             }
         }
-        console.log(textGroups)
         return textGroups
     }
 
-
+    // returns indices of lone punctuation marks (ex: " - " or " ?! ") --> the punctuation mark has a space on each side (before AND after)
+    // it will evaluate as null after the cleaning function
     findLonePunctuation = (textInput) => {
         let punctuationArray = []
-        let splitty = textInput.split(" ")
-        for (let i=0; i < splitty.length; i++) {
-          if (splitty[i].match(/\w/g)===null) {
-            punctuationArray.push(i)
+        let splitWordArray = textInput.split(" ")
+        for (let i = 0; i < splitWordArray.length; i++) {
+            if (splitWordArray[i].match(/\w/g) === null) {
+                punctuationArray.push(i)
+            }
         }
-      }
-      return punctuationArray
-      }
-      
-      concatPunctuation = (textInput) => {
+        return punctuationArray
+    }
+
+    // adds the lone punctuation mark (1) to the preceding word, (2) to the following word, OR (3) removes it
+    concatPunctuation = (textInput) => {
         let punctuationArray = this.findLonePunctuation(textInput)
-        let splitty = textInput.split(" ")
-        // console.log(splitty.length)
+        let splitWordArray = textInput.split(" ")
+
         if (punctuationArray.length > 0) {
-      
-          for (let i=0; i < punctuationArray.length; i++) {
-            // console.log(punctuationArray[i])
-            let punctuationIndex = punctuationArray[i]
-            if (splitty[punctuationIndex-1]) {
-            splitty[punctuationIndex-1] = splitty[punctuationIndex-1].concat(splitty[punctuationIndex])
+            for (let i = 0; i < punctuationArray.length; i++) {
+                let punctuationIndex = punctuationArray[i]
+                if (splitWordArray[punctuationIndex - 1]) {
+                    splitWordArray[punctuationIndex - 1] = splitWordArray[punctuationIndex - 1].concat(splitWordArray[punctuationIndex])
+                }
+                else if (splitWordArray[punctuationIndex + 1]) {
+                    splitWordArray[punctuationIndex + 1] = splitWordArray[punctuationIndex + 1].concat(splitWordArray[punctuationIndex])
+                }
+                splitWordArray.splice(punctuationIndex, 1)
             }
-            else if (splitty[punctuationIndex+1]) {
-              splitty[punctuationIndex+1] = splitty[punctuationIndex+1].concat(splitty[punctuationIndex])
-            }
-              splitty.splice(punctuationIndex, 1)
-          }
-      
+
         }
-        //   console.log(splitty.length)
-      
-        return splitty
-      }
+        return splitWordArray
+    }
 
     render() {
-        // I think I need this so that stuff doesn't render before the scripts do
-        if (!this.props.selectedLine || !this.props.transcription) {
+        let {
+            selectedLine,
+            transcription
+        } = this.props
+
+        // we shouldn't even get forwarded to this screen without either valid selectedLine or transcription props,
+        // but just in case...
+        if (!selectedLine || !transcription) {
             return null;
         }
 
-        let correctWordsArray = this.evaluateMissedWords()
-        // console.log(`correct words array: ${correctWordsArray}`)
-        let extraWordsArray = this.evaluateExtraWords()
-        // console.log(`non-extra words array: ${extraWordsArray}`)
-
-        // this.setState = ({
-        //     correctWordsArray: correctWordsArray,
-        //     extraWordsArray: extraWordsArray
-        // })
+        let matchedTextWords = this.evaluateMissedWords()
+        let nonExtraSpokenWords = this.evaluateExtraWords()
 
         const renderActualText = () => {
-            let text = ""
-            let textArray = this.concatPunctuation(this.props.selectedLine)
-            console.log(`actual text length: ${textArray.length}`)
-            // console.log(textArray)
-            
-            return (<View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+            let textArray = this.concatPunctuation(selectedLine)
 
-                {textArray.map((word, index) => {
-                    let style=""
-                    if (correctWordsArray.includes(index)) {
-                        style = {color: 'black'}
-                    }
-                    else {
-                        style = {color: 'red'}
-                    }
-
-                    return (<Text key={index} style={style}>{word} </Text>)
-                })}
-                    </View>)
-
+            return (
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                    {textArray.map((word, index) => {
+                        let style = ""
+                        if (matchedTextWords.includes(index)) {
+                            style = { color: '#000' }
+                        }
+                        else {
+                            style = { color: '#FF5151' }
+                        }
+                        return (<Text key={index} style={style}>{word} </Text>)
+                    })}
+                </View>
+            )
         }
 
         const renderSpokenTranscript = () => {
-            let text = ""
-            let spokenTranscriptArray = this.concatPunctuation(this.props.transcription)
-            console.log(`spoken transcript length: ${spokenTranscriptArray.length}`)
+            let spokenTranscriptArray = this.concatPunctuation(transcription)
 
-            return (<View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-
-                {spokenTranscriptArray.map((word, index) => {
-                    let style=""
-                    if (extraWordsArray.includes(index)) {
-                        style = {color: 'black'}
-                    }
-                    else {
-                        style = {color: 'red'}
-                    }
-                    return (<Text key={index} style={style}>{word} </Text>)
-                })}
-                    </View>)
-
+            return (
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                    {spokenTranscriptArray.map((word, index) => {
+                        let style = ""
+                        if (nonExtraSpokenWords.includes(index)) {
+                            style = { color: '#000' }
+                        }
+                        else {
+                            style = { color: '#FF5151' }
+                        }
+                        return (<Text key={index} style={style}>{word} </Text>)
+                    })}
+                </View>
+            )
         }
-
-
-
-
-
 
         return (
             <View>
-                <Header>Actual Line:</Header>
+                <Heading>Actual Line:</Heading>
                 {renderActualText()}
-                <Header>You Said:</Header>
-                 {renderSpokenTranscript()}
+                <Heading>You Said:</Heading>
+                {renderSpokenTranscript()}
             </View>
         );
     }

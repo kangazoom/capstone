@@ -2,53 +2,56 @@ import React, { Component } from 'react';
 import { StyleSheet, FlatList, View, Text, Button } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
-import styles from "./Common/MainStyles";
+import Heading from './Common/Heading'
+import styles from './Common/MainStyles';
 
 
 class ScriptContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = { selectedCharacter : props.selectedCharacter }
+        this.state = { 
+            selectedScript: props.selectedScript,
+            selectedCharacter : props.selectedCharacter }
 
         this.renderCell = this.renderCell.bind(this);
     }
 
     renderCell(cellData) {
         const selectedCharacter = this.state.selectedCharacter;
-        const textColor = (cellData.item.speaking_character === selectedCharacter) ? 'yellow' : 'white';
+        const textColor = (cellData.item.speaking_character === selectedCharacter) ? '#FFE251' : '#fff';
         return (
-            <View style={{ borderColor:'black', borderWidth: 2 }}>
+            <View style={{ borderColor:'#333', borderWidth: 1}}>
                 <Text 
-                style={{ backgroundColor: textColor, color:  'black'}}
-                onPress={() => {
-                    this.onLinePress(cellData)
-                }}>{`${cellData.item.speaking_character}: ${cellData.item.line}`}</Text>
+                style={{ backgroundColor: textColor, color: '#000', flexWrap: "wrap", padding: 2}}
+                onPress={() => {this.onLinePress(cellData)}}
+                >
+                <Text style={{fontWeight: 'bold'}}>{cellData.item.speaking_character}:</Text> 
+                {cellData.item.line}</Text>
             </View>
         );
     }
 
     onLinePress = (pressedLine) => {
         console.log(pressedLine)
-        Actions.testMemoryContainer({ selectedCharacter: this.props.characterName, selectedScript: this.props.selectedScript, selectedLine: pressedLine.item.line, selectedLineIndex: pressedLine.item.index })
+        Actions.testMemoryContainer({ 
+            selectedScript: this.state.selectedScript,
+            selectedCharacter: this.state.characterName, 
+            selectedLine: pressedLine.item.line, 
+            selectedLineIndex: pressedLine.item.index 
+        })
     }
 
-    // onTesterPress = (info) => {
-    //     console.log(info)
-    //     this.props.testerCB('IT WORKED')
-    // }
-
-
     render() {
+        let {
+            selectedScript,
+        } = this.state
 
         return (
             <View style={styles.container}>
-                {/* <Button 
-                title="TEST ME"
-                onPress={this.onTesterPress}
-                />
-                <Text>{this.props.tester}</Text> */}
+                <Heading>{selectedScript.title} by {selectedScript.author}</Heading>
+                <Text style={{marginBottom: 5}}>{selectedScript.description}</Text>
                 <FlatList
-                    data={this.props.selectedScript.script_data}
+                    data={selectedScript.script_data}
                     renderItem={this.renderCell}
                     keyExtractor={item => JSON.stringify(item.index)}
                 />

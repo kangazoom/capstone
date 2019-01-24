@@ -8,7 +8,6 @@ module.exports = StyleSheet.create({
       alignItems: 'center',
       justifyContent: "flex-start",
       backgroundColor: "#fff",
-      color: '#fff',
-      fontFamily: 'Verdana'
+      // marginTop: 20,
     },
 });

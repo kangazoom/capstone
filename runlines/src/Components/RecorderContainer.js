@@ -1,34 +1,14 @@
 import React, { Component } from 'react'
-// import {AudioRecorder, AudioUtils} from 'react-native-audio';
+import { View, Text, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { AudioRecorder } from 'react-native-audio-player-recorder'
+import Icon from 'react-native-vector-icons/Foundation'
 
-
-import {
-  ScrollView,
-  StyleSheet,
-  View,
-  Text,
-  Button,
-} from 'react-native'
-import {
-  AudioPlayer,
-  AudioRecorder,
-} from 'react-native-audio-player-recorder'
-import { Actions } from 'react-native-router-flux'
-
-import FireBaseService from '../Network/FireBaseService';
 import GoogleSpeechService from '../Network/GoogleSpeechService';
-
-// import RNFS from 'react-native-fs';
-// const RNFS = require('react-native-fs');
 import RNFetchBlob from 'react-native-fetch-blob'
-import axios from 'axios';
 
-
-
-// import RecordButton from './RecordButton'
-// import ActionButtons from './ActionButtons'
-// import Button from './Button'
+import ErrorOverlay from './Common/ErrorOverlay';
 import Constants from './Constants';
+
 
 class RecorderContainer extends Component {
   constructor(props) {
@@ -39,8 +19,11 @@ class RecorderContainer extends Component {
       isPaused: false,
       currentTime: 0,
       audioLength: 0,
-
+      isVisible: false,
+      statusMessage: null,
+      isLoading: false,
     }
+
     this.timer = null
   }
 
@@ -49,21 +32,17 @@ class RecorderContainer extends Component {
   }
 
   prepareRecordingPath() {
-    console.log(Constants.AUDIO_PATH)
     AudioRecorder.prepareRecordingAtPath(Constants.AUDIO_PATH, {
       SampleRate: 16000,
       Channels: 1,
       AudioQuality: 'high',
       AudioEncoding: 'ulaw',
-      // AudioEncodingBitRate: 32000,
-      // IncludeBase64: true,
     })
   }
 
   record = () => {
-    console.log('recording')
+    const me = this;
     this.setState({
-      isPlaying: false,
       isRecording: true,
       isFinishRecorded: false,
       audioLength: 0,
@@ -72,9 +51,9 @@ class RecorderContainer extends Component {
       AudioRecorder.startRecording()
       this.timer = setInterval(() => {
         const time = this.state.currentTime + 1
-        this.setState({ currentTime: time })
-        if (time === Constants.MAX_AUDIO_LENGTH) {
-          this.stopRecording()
+        me.setState({ currentTime: time })
+        if (time === Constants.MAX_AUDIO_LENGTH - 1) {
+          me.stopRecording()
         }
       }, 1000)
     })
@@ -85,104 +64,124 @@ class RecorderContainer extends Component {
     if (!isRecording) return
     const me = this;
     AudioRecorder.stopRecording()
-    console.log('stopped')
-    this.setState({ audioLength: this.state.currentTime + 1, isRecording: false, }, () => {
+    this.setState({
+      audioLength: this.state.currentTime + 1,
+      isRecording: false,
+      isLoading: true,
+    }, () => {
       if (me.state.audioLength > 0) {
-        console.log('we are in the encoding audio if/else')
         clearInterval(this.timer);
         me.encodeAudio()
-        .then((response) => {
-          // me.clearInterval(me.timer)
-          me.setState({ isFinishRecorded: true, currentTime: 0 }, ()  => {
-            console.log(`TEARS OF JOY q_q`)
-            Promise.resolve(response)
-          }) 
-        })
-      .catch((error) => {
-        console.log(`Inside the stopRecording Function: ${error}`)
-        Promise.reject(error)
-      })
+          .then((response) => {
+          })
+          .catch((error) => {
+            this.setState({
+              isVisible: true,
+              statusMessage: error
+            })
+          })
+          .finally(() => {
+            me.setState({
+              isFinishRecorded: true,
+              currentTime: 0,
+              isLoading: false
+            });
+          })
       }
     })
-
   }
 
   encodeAudio = () => {
-    console.log('k in encoding land')
     const filepath = Constants.AUDIO_PATH;
     const encoding = 'base64'
-    console.log(filepath)
-    console.log(encoding)
     return RNFetchBlob.fs.readFile(filepath, encoding)
       .then((data) => {
-        console.log(typeof data)
-        if(!data) { return Promise.reject('We got not data from readFile') }
-        console.log('encoding successful')
+        if (!data) { return Promise.reject('We got not data from readFile') }
         let phrases = this.props.phrases
         return GoogleSpeechService.discover(data, phrases);
-    }).then((transcript) => {
-      console.log(JSON.stringify(transcript));
-      this.returnedTranscriptionResponse(transcript)
-      return Promise.resolve('yay encoded data')
-    })
-      .catch((err) => {
-        console.log(`no encoding ${err}`)
-        console.log(this.sendTranscript)
+      }).then((transcript) => {
+        this.returnedTranscriptionResponse(transcript)
+        return Promise.resolve('yay encoded data')
+      })
+      .catch((error) => {
+        this.setState({
+          isVisible: true,
+          statusMessage: error
+        })
         return Promise.reject('error')
       })
 
-  }    
+  }
 
   returnedTranscriptionResponse = (transcription) => {
+    if (transcription !== {} && transcription !== null) {
+      this.setState({
+        statusMessage: "success!",
+      })
+    }
+    else {
+      this.setState({
+        isVisible: true,
+        statusMessage: 'You did not record any spoken words. Google did not understand you!',
+      })
+    }
     this.props.returnedTranscriptionResponseCB(transcription)
   }
 
   render() {
     const {
       isRecording,
+      isVisible,
+      statusMessage,
+      isLoading
     } = this.state
-    console.log('render called, is recording is ' + isRecording);
-  return(
-      <View>
-        <Button
-          title='RECORD'
-          disabled={isRecording}
-          onPress={this.record}
-        />
-{/* <RecordButton></RecordButton> */ }
-        <Text>{this.state.currentTime}</Text>
 
-        <Button
-          title="STOP"
-          disabled={!isRecording || (isRecording && this.state.currentTime<1)}
-          onPress={this.stopRecording}
-        />
+    let displayErrorMessage = statusMessage !== 'success!' ? `Encountered an error: ${statusMessage}` : ""
 
-        <Text>Start Over</Text>
+    const recordIcon = (<Icon name="record" size={90} color="#FF5151" />)
+    const stopIcon = (<Icon name="stop" size={90} color="#FF5151" />)
 
-  {/* <Text>{JSON.stringify(this.tryFunctions())}</Text> */}
+    return (
+      <View style={{ flexDirection: 'column', alignItems: 'center', paddingTop: 5 }}>
+        {isLoading &&
+          <View>
+            <Text>Fetching results...</Text>
+            <ActivityIndicator size="large" color="#00D0FF" />
+          </View>}
 
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
 
-{/* <ActionButtons 
-          isFinishRecorded={isFinishRecorded} 
-          isRecording={isRecording}
-          playPauseIcon={playPauseIcon}
-          playPauseHandler={playPauseHandler}
-          stopRecording={this.stopRecording} />*/}
-        
+          {isLoading === false && isRecording === false &&
+            <TouchableOpacity
+              onPress={this.record}
+              accessible={true}
+              accessibilityLabel="Record"
+            >
+              {recordIcon}
+            </TouchableOpacity>}
+
+          {!isLoading && isRecording &&
+            <TouchableOpacity
+              disabled={this.state.currentTime < 1}
+              onPress={this.stopRecording}
+              accessible={true}
+              accessibilityLabel="Stop Recording"
+            >
+              {stopIcon}
+            </TouchableOpacity>}
+
+        </View>
+        <Text>Time Remaining: {60 - this.state.currentTime} seconds</Text>
+
+        <ErrorOverlay
+          isVisible={isVisible}
+          onBackdropPress={() => this.setState({ isVisible: false })}
+        >
+          <Text>{displayErrorMessage}</Text>
+        </ErrorOverlay>
       </View >
     )
   }
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     marginTop: Constants.PLATFORM_MARGIN_TOP + 26,
-//     flex: 1,
-//   },
-//   content: {
-//     alignItems: 'center'
-//   },
-// })
 
 export default RecorderContainer;

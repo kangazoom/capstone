@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Button, View, Text, FlatList, TextInput, Picker } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TextInput, ScrollView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import FireBaseService from '../Network/FireBaseService';
-
 import { Overlay } from 'react-native-elements';
-import MultiSelect from 'react-native-multiple-select';
 
+import FireBaseService from '../Network/FireBaseService';
+import MultiSelect from 'react-native-multiple-select';
+import Heading from './Common/Heading';
+import Button from './Common/Button'
 import styles from "./Common/MainStyles";
 
 
@@ -24,8 +25,6 @@ class TextForm extends Component {
             isVisible: false,
             charHolder: []
         }
-
-        this.array = [""]
     }
 
     onFieldChange = fieldName => textInput => {
@@ -35,13 +34,9 @@ class TextForm extends Component {
 
     }
 
-    // delay = ms => new Promise(res => setTimeout(res, ms));
-
-
     createScene = () => {
         FireBaseService.initializeService()
         FireBaseService.addScript(this.state)
-        // await this.delay(5000);
         Actions.welcome();
     }
 
@@ -52,60 +47,41 @@ class TextForm extends Component {
 
     onSelectedItemsChange = (character, index) => {
         let recentSelection = character[character.length - 1]
-        let {charHolder} = this.state
+        let { charHolder } = this.state
         charHolder[index] = recentSelection
-        this.setState({charHolder })
+        this.setState({ charHolder })
     }
 
-    addLine = () => {
+    addLine = (index) => {
         this.setState({ arrayHolder: [...this.state.arrayHolder, 'new item'] })
     }
 
-    removeLine = (info) => {
-        // this.array.push('new')
-        // console.log(this.array)
-
-        // this.array.push(this.state.line);
-        // this.setState({ arrayHolder: [...this.state.arrayHolder, 'new item'] })
-
-        // let {lineList} = this.state
-        // lineList="";
-        // this.setState({
-        //     lineList
-        // })
-        console.log('in the removal function')
-        console.log(info)
-    }
-
-
-
     render() {
+        let {
+            title,
+            author,
+            charHolder
+        } = this.state;
 
-        let { charHolder } = this.state;
-        let scriptStarted = this.state.title && this.state.author
+        let scriptStarted = title && author
 
         return (
-            <View style={styles.container}>
-                <Text>Input Your Scene:</Text>
-                <TextInput
-                    placeholder="script title"
-                    onChangeText={this.onFieldChange("title")}
-                    value={this.state.title}
-                    spellcheck={true}
-                />
-                <TextInput
-                    placeholder="script author"
-                    onChangeText={this.onFieldChange("author")}
-                    value={this.state.author}
-                    spellcheck={true}
-                />
-
-
-                {/* {this.state.title && this.state.author ? */}
-
-                    {/* // <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}> */}
-
-
+            <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+                <View style={styles.container}>
+                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start', width: 325 }}>
+                        <Heading>Input Your Scene:</Heading>
+                        <TextInput
+                            placeholder="script title"
+                            onChangeText={this.onFieldChange("title")}
+                            value={this.state.title}
+                            spellcheck={true}
+                        />
+                        <TextInput
+                            placeholder="script author"
+                            onChangeText={this.onFieldChange("author")}
+                            value={this.state.author}
+                            spellcheck={true}
+                        />
                         <TextInput
                             placeholder="description"
                             onChangeText={this.onFieldChange("description")}
@@ -113,97 +89,69 @@ class TextForm extends Component {
                             spellcheck={true}
                         />
 
-                    {/* // </View> */}
-                    {/* // : <Text>{' '}</Text>} */}
+                        <FlatList
+                            data={this.state.arrayHolder}
+                            extraData={this.state}
+                            keyExtractor={(index) => index.toString()}
+                            contentContainerStyle={{ width: 325 }}
+                            renderItem={({ item, index }) => {
+                                return (<View>
 
+                                    <MultiSelect
+                                        single={true}
+                                        items={this.state.characterList}
+                                        uniqueKey="name"
+                                        onSelectedItemsChange={(text) => this.onSelectedItemsChange(text, index)}
+                                        selectedItems={[charHolder[index]]}
+                                        selectText={[charHolder[index]].toString()}
+                                        searchInputPlaceholderText="Search or Enter Characters..."
+                                        onChangeInput={(text) => console.log(text)}
+                                        hideSubmitButton={false}
+                                        tagRemoveIconColor="#CCC"
+                                        tagBorderColor="#CCC"
+                                        tagTextColor="#CCC"
+                                        selectedItemTextColor="#CCC"
+                                        selectedItemIconColor="#CCC"
+                                        itemTextColor="#000"
+                                        displayKey="name"
+                                        canAddItems={true}
+                                        onAddItem={this.addCharacter}
+                                        searchInputStyle={{ color: '#CCC' }}
+                                    />
 
-                {/* {this.state.title && this.state.author ?
+                                    <TextInput
+                                        placeholder={'enter new line'}
+                                        onChangeText={
+                                            text => {
+                                                let { lineList } = this.state;
+                                                lineList[index] = text;
+                                                this.setState({
+                                                    lineList
+                                                });
+                                            }
+                                        }
+                                        spellcheck={true}
+                                        multiline={true}
+                                        numberOfLines={4}
+                                    />
+                                </View>
+                                )
+                            }} />
 
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
+                            <Button onPress={this.addLine}>
+                                <Text>Add A Line</Text>
+                            </Button>
 
-
-                    : <Text>{' '}</Text>} */}
-
-<Button title="Add A Line"
-                    onPress={
-                        this.addLine
-                    }
-                />
-                    <Button title="Save Scene"
-                    onPress={this.createScene}
-                />
-
-                <FlatList
-                    data={this.state.arrayHolder}
-                    extraData={this.state}
-                    keyExtractor={(index) => index.toString()}
-                    renderItem={({ item, index }) => {
-                        return (<View>
-                            {/* <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}> */}
-
-                                <MultiSelect
-                                    single={true}
-                                    items={this.state.characterList}
-                                    uniqueKey="name"
-                                    //   ref={(component) => { this.multiSelect = component }}
-                                    onSelectedItemsChange={(text) => this.onSelectedItemsChange(text, index)}
-                                    selectedItems={[charHolder[index]]}
-                                    selectText={[charHolder[index]].toString()}
-                                    searchInputPlaceholderText="Search or Enter Characters..."
-                                    onChangeInput={(text) => console.log(text)}
-                                    hideSubmitButton={false}
-                                    // textInputProps={(text) => this.onSelectedItemsChange(text, index)}
-                                    //   tagRemoveIconColor="#CCC"
-                                    //   tagBorderColor="#CCC"
-                                    //   tagTextColor="#CCC"
-                                    //   selectedItemTextColor="#CCC"
-                                    //   selectedItemIconColor="#CCC"
-                                    itemTextColor="#000"
-                                    displayKey="name"
-                                    canAddItems={true}
-                                    onAddItem={this.addCharacter}
-                                    // flatListProps={[charHolder[index]]}
-                                //   searchInputStyle={{ color: '#CCC' }}
-                                //   submitButtonColor="#CCC"
-                                //   submitButtonText="Submit"
-                                />
-                            {/* </View> */}
-
-                            <TextInput
-                                placeholder={'enter new line'}
-                                onChangeText={
-                                    text => {
-                                        // this.setState({line: text})
-                                        // this.onFieldChange(`lineList${index}`)
-                                        let { lineList } = this.state;
-                                        lineList[index] = text;
-                                        this.setState({
-                                            lineList
-                                        });
-                                        // this.onFieldChange("lineList")
-                                    }
-                                }
-                                spellcheck={true}
-                                multiline={true}
-                                numberOfLines={4}
-                            // value={this.state.lineList[index]}
-                            />
-
-                            <Button title="Remove Line"
-                                onPress={
-                                    this.removeLine(item)
-                                }
-                            />
+                            <Button onPress={this.createScene}>
+                                <Text>Save Scene</Text>
+                            </Button>
                         </View>
 
 
-                        )
-
-
-
-                    }} />
-
-
-            </View>
+                    </View>
+                </View>
+            </ScrollView>
         )
 
     }
