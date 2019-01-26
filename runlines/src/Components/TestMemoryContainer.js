@@ -106,6 +106,8 @@ class TestMemoryContainer extends Component {
                     <Heading>{selectedScript.title} by {selectedScript.author}</Heading>
                     <Text style={{ marginBottom: 5 }}>{selectedScript.description}</Text>
 
+                    <RecorderContainer returnedTranscriptionResponseCB={this.transcriptionResponse} phrases={phrases} />
+
                     <Heading>Cue Line: </Heading>
                     {this.state.cueLineInfo ?
                         <Text>{this.state.cueLineInfo.speaking_character}: {this.state.cueLineInfo.line} </Text>
@@ -118,10 +120,9 @@ class TestMemoryContainer extends Component {
                     >
                         {showUserLine ?
                             <Text>{this.state.selectedLine}</Text> :
-                            <Text style={{ color: '#FFE251', padding: 10 }}>Tap to show/hide line</Text>}
+                            <Text style={{ color: '#00D0FF', padding: 10 }}>Tap to show/hide line</Text>}
                     </TouchableOpacity>
 
-                    <RecorderContainer returnedTranscriptionResponseCB={this.transcriptionResponse} phrases={phrases} />
                 </View>
             </ScrollView>
         );

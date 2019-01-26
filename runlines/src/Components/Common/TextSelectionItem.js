@@ -15,10 +15,9 @@ const styles = {
     containerStyle: {
     backgroundColor: '#00D0FF',
     borderWidth: 1,
-    borderRadius: 2,
+    borderRadius: 25,
     borderColor: '#fff',
-    shadowRadius: 2,
-    elevation: 1,
+    elevation: 2,
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 2,
@@ -27,7 +26,7 @@ const styles = {
     textStyle: {
         textAlign: 'center',
         alignSelf: 'center',
-        color: '#ffffff',
+        color: '#fff',
         fontSize: 18,
         fontWeight: '500',
         paddingTop: 10,

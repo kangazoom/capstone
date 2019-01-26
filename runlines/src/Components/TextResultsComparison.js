@@ -133,7 +133,9 @@ class TextResultsComparison extends Component {
         }
 
         const renderSpokenTranscript = () => {
+            console.log(transcription)
             let spokenTranscriptArray = this.concatPunctuation(transcription)
+            console.log(spokenTranscriptArray)
 
             return (
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>

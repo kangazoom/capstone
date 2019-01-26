@@ -16,19 +16,17 @@ const RouterComponent = () => {
     key="root" 
     navigationBarStyle={{backgroundColor: "#BEBBBB", borderBottomWidth: 5, borderColor: '#fff'}} 
     titleStyle= {{color: "#fff", fontSize: 20, fontFamily: 'Verdana', fontWeight: '100'}}
-    navBarButtonColor = "#fff">
+    navBarButtonColor = "#333">
 
         <Scene 
             key="welcome"
             title="Welcome"
-            // onEnter={() => Actions.refresh()}
             component={Welcome}
             initial={true} />
         <Scene
             key="textForm"
             component={TextForm}
             title="Add Dialogue"
-            // onExit={() => Actions.refresh()}
         />
         <Scene 
             key="chooseCharacter"

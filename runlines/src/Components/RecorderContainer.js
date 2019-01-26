@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/Foundation'
 import GoogleSpeechService from '../Network/GoogleSpeechService';
 import RNFetchBlob from 'react-native-fetch-blob'
 
-import ErrorOverlay from './Common/ErrorOverlay';
 import Constants from './Constants';
 
 
@@ -19,8 +18,6 @@ class RecorderContainer extends Component {
       isPaused: false,
       currentTime: 0,
       audioLength: 0,
-      isVisible: false,
-      statusMessage: null,
       isLoading: false,
     }
 
@@ -75,10 +72,7 @@ class RecorderContainer extends Component {
           .then((response) => {
           })
           .catch((error) => {
-            this.setState({
-              isVisible: true,
-              statusMessage: error
-            })
+            alert(`Encountered an error: ${error}`)
           })
           .finally(() => {
             me.setState({
@@ -104,26 +98,15 @@ class RecorderContainer extends Component {
         return Promise.resolve('yay encoded data')
       })
       .catch((error) => {
-        this.setState({
-          isVisible: true,
-          statusMessage: error
-        })
+        alert(`Encountered an error: ${error}`)
         return Promise.reject('error')
       })
 
   }
 
   returnedTranscriptionResponse = (transcription) => {
-    if (transcription !== {} && transcription !== null) {
-      this.setState({
-        statusMessage: "success!",
-      })
-    }
-    else {
-      this.setState({
-        isVisible: true,
-        statusMessage: 'You did not record any spoken words. Google did not understand you!',
-      })
+    if (transcription === {} || transcription === null) {
+      alert(`We did not understand you or you did not say anything!`)
     }
     this.props.returnedTranscriptionResponseCB(transcription)
   }
@@ -131,12 +114,8 @@ class RecorderContainer extends Component {
   render() {
     const {
       isRecording,
-      isVisible,
-      statusMessage,
       isLoading
     } = this.state
-
-    let displayErrorMessage = statusMessage !== 'success!' ? `Encountered an error: ${statusMessage}` : ""
 
     const recordIcon = (<Icon name="record" size={90} color="#FF5151" />)
     const stopIcon = (<Icon name="stop" size={90} color="#FF5151" />)
@@ -172,13 +151,6 @@ class RecorderContainer extends Component {
 
         </View>
         <Text>Time Remaining: {60 - this.state.currentTime} seconds</Text>
-
-        <ErrorOverlay
-          isVisible={isVisible}
-          onBackdropPress={() => this.setState({ isVisible: false })}
-        >
-          <Text>{displayErrorMessage}</Text>
-        </ErrorOverlay>
       </View >
     )
   }

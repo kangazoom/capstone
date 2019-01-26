@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { Overlay } from 'react-native-elements';
 
 import FireBaseService from '../Network/FireBaseService';
 import TextSelectionItem from './Common/TextSelectionItem';
 import Heading from './Common/Heading';
 import Button from './Common/Button';
 import styles from './Common/MainStyles';
-import ErrorOverlay from './Common/ErrorOverlay';
 
 class Welcome extends Component {
     constructor() {
@@ -16,8 +14,6 @@ class Welcome extends Component {
         this.state = {
             scriptCollection: [],
             selectedScript: null,
-            isVisible: false,
-            statusMessage: null,
             isLoading: true,
         }
     }
@@ -31,14 +27,10 @@ class Welcome extends Component {
             .then((scriptsArray) => {
                 self.setState({
                     scriptCollection: scriptsArray,
-                    statusMessage: 'success!',
                 });
             })
             .catch((error) => {
-                self.setState({
-                    isVisible: true,
-                    statusMessage: error,
-                });
+                alert(`Encountered an error: ${error}`)
             })
         this.setState({
             isLoading: false
@@ -60,20 +52,7 @@ class Welcome extends Component {
         let {
             scriptCollection,
             isLoading,
-            isVisible,
-            statusMessage,
         } = this.state;
-
-        let displayStatusMessage = () => {
-            if (statusMessage === 'success!') {
-                return 'Successfully loaded scripts'
-            }
-            else {
-                return
-            }
-        }
-
-        let displayErrorMessage = statusMessage!=='success!' ? `Encountered an error: ${statusMessage}` : ""
 
         return (
             <View style={styles.container}>
@@ -97,13 +76,6 @@ class Welcome extends Component {
                 {scriptCollection.length === 0 && isLoading === false &&
                     <Text>To get started, add some scenes!</Text>
                 }
-
-                <ErrorOverlay
-                    isVisible={isVisible}                    
-                    onBackdropPress={() => this.setState({ isVisible: false })}
-                >
-                    <Text>{displayErrorMessage}</Text>
-                </ErrorOverlay>
             </View>
         );
     }

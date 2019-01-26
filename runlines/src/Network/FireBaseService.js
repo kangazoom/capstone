@@ -16,7 +16,7 @@ export default class FireBaseService {
     // GET SCRIPTS //
     static getScripts() {
         const scriptsReference = RNFirebase.firestore().collection('scripts');
-        return scriptsReference.get().then((querySnapshot) => {
+        return scriptsReference.orderBy('last_modified').get().then((querySnapshot) => {
             let scripts = querySnapshot.docs.map((documentSnapshot) => {
                 documentAsData = documentSnapshot.data()
                 documentAsData['id'] = documentSnapshot.id
@@ -41,7 +41,8 @@ export default class FireBaseService {
             title: scriptInfo.title,
             author: scriptInfo.author,
             description: scriptInfo.description,
-            script_data: script_data
+            script_data: script_data,
+            last_modified: new Date()
         };
 
         let addDoc = RNFirebase.firestore().collection('scripts')

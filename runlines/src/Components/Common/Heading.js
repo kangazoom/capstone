@@ -12,11 +12,9 @@ const Heading = (props) => {
 const styles = {
     headerStyle: {
         color: '#000',
-        fontFamily: 'Verdana',
+        fontFamily: 'Helvetica',
         fontSize: 20,
         fontWeight: '400',
-        // textDecorationLine: 'underline',
-        // textDecorationColor: '#CC00FF',
         marginTop: 20,
     }
 }

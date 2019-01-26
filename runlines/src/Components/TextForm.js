@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text, FlatList, TextInput, ScrollView } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { Overlay } from 'react-native-elements';
 
 import FireBaseService from '../Network/FireBaseService';
 import MultiSelect from 'react-native-multiple-select';
@@ -23,7 +22,8 @@ class TextForm extends Component {
             lineList: [],
             arrayHolder: [" "],
             isVisible: false,
-            charHolder: []
+            charHolder: [],
+            isValid: false,
         }
     }
 
@@ -34,10 +34,38 @@ class TextForm extends Component {
 
     }
 
-    createScene = () => {
-        FireBaseService.initializeService()
-        FireBaseService.addScript(this.state)
-        Actions.welcome();
+    createScene = async() => {
+        await this.validateInput()
+        if (this.state.isValid === true) {
+            FireBaseService.initializeService()
+            FireBaseService.addScript(this.state)
+            alert('Success!')
+            Actions.welcome();
+        }
+        else {
+            alert('You left a mandatory field empty!')
+        }
+    }
+
+    validateInput = () => {
+        let countBlankFields = 0
+
+        if (this.state.title.trim().length === 0 || this.state.author.trim().length === 0) {
+            countBlankFields++
+            console.log(countBlankFields)
+        }
+
+        for (let i = 0; i < this.state.lineList; i++) {
+            if (this.state.lineList[i].trim().length === 0 || this.state.characterList[i].trim().length===0) {
+                countBlankFields++
+                console.log(countBlankFields)
+            }
+        }
+
+        console.log(countBlankFields)
+        if (countBlankFields === 0) {
+            this.setState({ isValid: true })
+        }
     }
 
     addCharacter = (character) => {
@@ -71,19 +99,20 @@ class TextForm extends Component {
                     <View style={{ flex: 1, flexDirection: 'column', alignItems: 'flex-start', width: 325 }}>
                         <Heading>Input Your Scene:</Heading>
                         <TextInput
+                            style={stylesForm.formStyle}
                             placeholder="script title"
                             onChangeText={this.onFieldChange("title")}
                             value={this.state.title}
-                            spellcheck={true}
                         />
                         <TextInput
+                            style={stylesForm.formStyle}
                             placeholder="script author"
                             onChangeText={this.onFieldChange("author")}
                             value={this.state.author}
-                            spellcheck={true}
                         />
                         <TextInput
-                            placeholder="description"
+                            style={stylesForm.formStyle}
+                            placeholder="description [optional]"
                             onChangeText={this.onFieldChange("description")}
                             value={this.state.description}
                             spellcheck={true}
@@ -103,23 +132,24 @@ class TextForm extends Component {
                                         uniqueKey="name"
                                         onSelectedItemsChange={(text) => this.onSelectedItemsChange(text, index)}
                                         selectedItems={[charHolder[index]]}
-                                        selectText={[charHolder[index]].toString()}
-                                        searchInputPlaceholderText="Search or Enter Characters..."
+                                        selectText={'Enter character name'}
+                                        searchInputPlaceholderText="Enter New or Search for Characters..."
                                         onChangeInput={(text) => console.log(text)}
                                         hideSubmitButton={false}
                                         tagRemoveIconColor="#CCC"
-                                        tagBorderColor="#CCC"
-                                        tagTextColor="#CCC"
-                                        selectedItemTextColor="#CCC"
+                                        tagBorderColor="#333"
+                                        tagTextColor="#333"
+                                        selectedItemTextColor="#333"
                                         selectedItemIconColor="#CCC"
                                         itemTextColor="#000"
                                         displayKey="name"
                                         canAddItems={true}
                                         onAddItem={this.addCharacter}
-                                        searchInputStyle={{ color: '#CCC' }}
+                                        searchInputStyle={{ color: '#333' }}
                                     />
 
                                     <TextInput
+                                        style={{height: 100, width: "95%", borderColor: "#333", borderWidth: 2}}
                                         placeholder={'enter new line'}
                                         onChangeText={
                                             text => {
@@ -156,5 +186,14 @@ class TextForm extends Component {
 
     }
 }
+
+const stylesForm = StyleSheet.create({
+    formStyle: {
+        height: 45,
+        width: "95%",
+        borderColor: "#333",
+        borderWidth: 2
+    }
+})
 
 export default TextForm;
