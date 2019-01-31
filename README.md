@@ -1,5 +1,5 @@
 ## What is this app?
-This mobile app was created during [Ada Developer Academy's](https://www.adadevelopersacademy.org/) month-long capstone project, in which each student created a project using at least three new self-taught technologies. This app uses the Google Speech-to-Text API to help actors memorize scenes. Users record their memorized line after viewing a cue line. The app will then display the actual text from the scene as well as a transcript of the recording, with missed and extra words highlighed.
+This mobile app was created during [Ada Developer Academy's](https://www.adadevelopersacademy.org/) month-long capstone project, in which each student created a project using at least three new self-taught technologies. This app uses the Google Speech-to-Text API to help actors memorize scenes. Users record their memorized line after viewing a cue line. The app then displays the actual text from the scene as well as a transcript of the recording, with missed and extra words highlighed.
 
 ### Motivation
 Other mobile apps allow the actor to record and listen to their and other characters’ lines, but none tell the actor when they miss a word or flub a line.
