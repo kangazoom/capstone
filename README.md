@@ -7,9 +7,15 @@ Other mobile apps allow the actor to record and listen to their and other charac
 ### Screenshots
 Click an image below for the video version (the last two feature audio)
 
-[![Adding a new scene](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-1.gif "Adding a new scene")](https://vimeo.com/313458103)
-[![Reciting a line without any mistakes](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-2.gif "Reciting a line without any mistakes")](https://vimeo.com/313458088)
-[![Reciting a line with both missed and extra words](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-3.gif "Reciting a line with both missed and extra words")](https://vimeo.com/313458115)
+| a  |  b | c  |
+|---|---|---|
+|
+[![Adding a new scene](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-1.gif "Adding a new scene")](https://vimeo.com/313458103)   |  [![Reciting a line without any mistakes](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-2.gif "Reciting a line without any mistakes")](https://vimeo.com/313458088) | [![Reciting a line with both missed and extra words](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-3.gif "Reciting a line with both missed and extra words")](https://vimeo.com/313458115)  |
+|   |   |   |
+|   |   |   |
+
+
+
 
 ### Setup
 #### Technologies
