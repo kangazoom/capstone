@@ -35,3 +35,4 @@
 - Write more tests
 - Refactor Code and split presentational and container components
 - Make design+UI nicer
+- Clean git commits, removing earlier double commits from rebase
