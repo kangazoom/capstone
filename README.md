@@ -5,8 +5,8 @@ This mobile app was created during [Ada Developer Academy's](https://www.adadeve
 Other mobile apps allow the actor to record and listen to their and other characters’ lines, but none tell the actor when they miss a word or flub a line.
 
 ### Screenshots
-![Adding a new scene](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-1.gif "Adding a new scene")
-[Video Version](https://vimeo.com/313458103)
+Click for videos
+[![Adding a new scene](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-1.gif "Adding a new scene")](https://vimeo.com/313458103)
 ![Reciting a line without any mistakes](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-2.gif "Reciting a line without any mistakes")
 [Video Version, with audio](https://vimeo.com/313458088)
 ![Reciting a line with both missed and extra words](https://raw.githubusercontent.com/kangazoom/capstone/imgs/runlines/readme_assets/mc-capstone-3.gif "Reciting a line with both missed and extra words")
